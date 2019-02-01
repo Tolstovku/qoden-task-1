@@ -34,6 +34,5 @@ namespace WebApplication1.Database.Entities
         public SalaryRate SalaryRate { get; set; }
 
         public ICollection<SalaryRateRequest> SalaryRateRequests { get; set; }
-        //TODO ??? хранить пароль в этой же сущности?
     }
 }

@@ -10,10 +10,12 @@ namespace WebApplication1.Database.Entities.Controllers
     public class ManagerController : Controller
     {
         private readonly IManagerService _managerService;
+        private readonly ISalaryRateRequestService _salaryRateRequestService;
 
-        public ManagerController(IManagerService managerService)
+        public ManagerController(IManagerService managerService, ISalaryRateRequestService salaryRateRequestService)
         {
             _managerService = managerService;
+            _salaryRateRequestService = salaryRateRequestService;
         }
 
         [HttpGet("user/{userId}")]
@@ -31,13 +33,13 @@ namespace WebApplication1.Database.Entities.Controllers
         [HttpGet("requests/{managerId}")]
         public List<SalaryRateRequest> GetSalaryRateRequests(int managerId)
         {
-            return _managerService.GetRateRequests(managerId);
+            return _salaryRateRequestService.GetRateRequests(managerId);
         }
 
         [HttpPut("requests")]
         public void AnswerSalaryRateRequest([FromBody] AnswerSalaryRateRequestRequest req)
         {
-            _managerService.AnswerSalaryRateRequest(req);
+            _salaryRateRequestService.AnswerSalaryRateRequest(req);
         }
     }
 }

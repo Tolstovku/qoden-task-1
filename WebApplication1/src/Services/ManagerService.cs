@@ -10,8 +10,6 @@ namespace WebApplication1.Database.Entities.Services
     {
         void ModifyUser(User user);
         GetUserInfoResponse GetUserInfo(int userId);
-        List<SalaryRateRequest> GetRateRequests(int managerId);
-        void AnswerSalaryRateRequest(AnswerSalaryRateRequestRequest req);
     }
 
     public class ManagerService : IManagerService
@@ -35,29 +33,5 @@ namespace WebApplication1.Database.Entities.Services
             _db.Users.Find(userId);
         }
 
-        public List<SalaryRateRequest> GetRateRequests(int managerId)
-        {
-            var manager = _db.Users.Include(u => u.Department).SingleOrDefault(u => u.Id == managerId);
-            var managerDepartment = manager.Department;
-            return _db.SalaryRateRequests
-                .Where(srr => srr.Sender.Department == managerDepartment)
-                .ToList();
-        }
-
-        //TODO ??? половина логики тут половина там
-        public void AnswerSalaryRateRequest(AnswerSalaryRateRequestRequest req)
-        {
-            var salaryRateRequest = req.ConvertToSalaryRateRequest();
-            var previousSRRInChain = _db.SalaryRateRequests
-                .Include(srr => srr.Sender)
-                .Include(srr => srr.Reviewer)
-                .LastOrDefault(srr => srr.RequestChainId == salaryRateRequest.RequestChainId);
-            salaryRateRequest.SuggestedRate = previousSRRInChain.SuggestedRate;
-            salaryRateRequest.SenderId = previousSRRInChain.SenderId;
-            salaryRateRequest.Reason = previousSRRInChain.Reason;
-            salaryRateRequest.Status = previousSRRInChain.Status;
-            _db.SalaryRateRequests.Add(salaryRateRequest);
-            _db.SaveChanges();
-        }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Database.Entities.Requests;
 using WebApplication1.Database.Entities.Services;
@@ -9,29 +10,30 @@ namespace WebApplication1.Database.Entities.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly ISalaryRateRequestService _salaryRateRequestService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ISalaryRateRequestService salaryRateRequestService)
         {
             _userService = userService;
+            _salaryRateRequestService = salaryRateRequestService;
         }
 
         [HttpGet("{userId}")]
-        public void GetProfile(int userId)
+        public GetProfileResponse GetProfile(int userId)
         {
-            _userService.GetProfile(userId);
+            return _userService.GetProfile(userId);
         }
 
         [HttpPut("requests")]
         public void CreateSalaryRateRequests([FromBody] CreateSalaryRateRequestByUserRequest req)
         {
-            _userService.CreateSalaryRateRequest(req);
+            _salaryRateRequestService.CreateSalaryRateRequest(req);
         }
 
-        //TODO ??? Получать айди из запроса или из куки?
         [HttpGet("requests/{userId}")]
-        public void GetSalaryRateRequests(int userId)
+        public List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequests(int userId)
         {
-            _userService.GetSalaryRateRequests(userId);
+            return _salaryRateRequestService.GetSalaryRateRequests(userId);
         }
     }
 }

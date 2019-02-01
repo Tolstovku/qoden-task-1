@@ -24,6 +24,7 @@ namespace WebApplication1
             services.AddScoped<IManagerService, ManagerService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<ILoginService, LoginService>();
             services.Configure<Config>(Configuration.GetSection("Database"));
             services.AddMvc();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

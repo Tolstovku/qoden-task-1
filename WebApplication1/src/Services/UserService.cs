@@ -9,8 +9,6 @@ namespace WebApplication1.Database.Entities.Services
     public interface IUserService
     {
         GetProfileResponse GetProfile(int userId);
-        void CreateSalaryRateRequest(CreateSalaryRateRequestByUserRequest req);
-        List<SalaryRateRequest> GetSalaryRateRequests(int userId);
     }
 
     internal class UserService : IUserService
@@ -28,19 +26,6 @@ namespace WebApplication1.Database.Entities.Services
             return new GetProfileResponse(user);
         }
 
-        public void CreateSalaryRateRequest(CreateSalaryRateRequestByUserRequest req)
-        {
-            var salaryRateRequest = req.ConvertToSalaryRateRequest();
-            _db.SalaryRateRequests.Add(salaryRateRequest);
-            _db.SaveChanges();
-            //TODO ??? нужно ли возвращать то что создаешь
-        }
 
-        public List<SalaryRateRequest> GetSalaryRateRequests(int userId)
-        {
-            return _db.SalaryRateRequests
-                .Where(srr => srr.SenderId == userId)
-                .ToList();
-        }
     }
 }

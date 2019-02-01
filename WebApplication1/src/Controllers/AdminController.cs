@@ -10,14 +10,15 @@ namespace WebApplication1.Database.Entities.Controllers
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
+        private readonly ISalaryRateRequestService _salaryRateRequestService;
 
-        public AdminController(IAdminService adminService)
+        public AdminController(IAdminService adminService, ISalaryRateRequestService salaryRateRequestService)
         {
             _adminService = adminService;
+            _salaryRateRequestService = salaryRateRequestService;
         }
 
-        //TODO ??? что лучше: просто две стринги или целый класс под запрос?
-        [HttpPut("user")]
+        [HttpPut("user/{userId}")]
         public void AssignDepartment([FromBody] AssignDepartmentRequest req)
         {
             _adminService.AssignDepartment(req);
@@ -26,7 +27,7 @@ namespace WebApplication1.Database.Entities.Controllers
         [HttpGet("requests")]
         public List<SalaryRateRequest> GetSalaryRateRequests()
         {
-            return _adminService.GetSalaryRateRequests();
+            return _salaryRateRequestService.GetSalaryRateRequests();
         }
 
         [HttpPost("user")]
@@ -36,3 +37,7 @@ namespace WebApplication1.Database.Entities.Controllers
         }
     }
 }
+
+
+// Depatment is not like backend frontend but like developers cleaners engineers etc
+// remake managers 

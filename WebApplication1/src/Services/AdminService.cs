@@ -9,11 +9,9 @@ namespace WebApplication1.Database.Entities.Services
     {
         void CreateUser(User user);
         void AssignDepartment(AssignDepartmentRequest req);
-        List<SalaryRateRequest> GetSalaryRateRequests();
     }
 
 
-    //TODO ??? где должны быть асинки в контроллерах онли или в сервисах тоже?
     public class AdminService : IAdminService
     {
         private readonly DatabaseContext _db;
@@ -38,10 +36,5 @@ namespace WebApplication1.Database.Entities.Services
             _db.SaveChanges();
         }
 
-        public List<SalaryRateRequest> GetSalaryRateRequests()
-        {
-            return _db.SalaryRateRequests
-                .ToList();
-        }
     }
 }
