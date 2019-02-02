@@ -34,7 +34,7 @@ namespace WebApplication1.Database.Entities.Controllers
         [HttpGet("requests/{managerId}")]
         public List<SalaryRateRequest> GetSalaryRateRequests(int managerId)
         {
-            return _salaryRateRequestService.GetRateRequests(managerId);
+            return _salaryRateRequestService.GetSalaryRateRequestsByManager(managerId);
         }
 
         [HttpPut("requests")]

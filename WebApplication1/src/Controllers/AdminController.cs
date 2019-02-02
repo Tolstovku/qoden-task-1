@@ -28,7 +28,7 @@ namespace WebApplication1.Database.Entities.Controllers
         [HttpGet("requests")]
         public List<SalaryRateRequest> GetSalaryRateRequests()
         {
-            return _salaryRateRequestService.GetSalaryRateRequests();
+            return _salaryRateRequestService.GetAllSalaryRateRequests();
         }
 
         [HttpPost("user")]

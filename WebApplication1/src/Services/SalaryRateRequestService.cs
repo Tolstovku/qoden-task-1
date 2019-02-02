@@ -8,10 +8,10 @@ namespace WebApplication1.Database.Entities.Services
 {
     public interface ISalaryRateRequestService
     {
-        List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequests(int userId);
-        List<SalaryRateRequest> GetRateRequests(int managerId);
+        List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequestsByUser(int userId);
+        List<SalaryRateRequest> GetSalaryRateRequestsByManager(int managerId);
         void AnswerSalaryRateRequest(AnswerSalaryRateRequestRequest req);
-        List<SalaryRateRequest> GetSalaryRateRequests();
+        List<SalaryRateRequest> GetAllSalaryRateRequests();
         void CreateSalaryRateRequest(CreateSalaryRateRequestByUserRequest req);
     }
     
@@ -24,7 +24,7 @@ namespace WebApplication1.Database.Entities.Services
             _db = db;
         }
 
-        public List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequests(int userId)
+        public List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequestsByUser(int userId)
         {
             var salaryRateRequests =  _db.SalaryRateRequests
                 .Where(srr => srr.SenderId == userId)
@@ -34,7 +34,7 @@ namespace WebApplication1.Database.Entities.Services
             return responseSRRsList;
         }
         
-        public List<SalaryRateRequest> GetRateRequests(int managerId)
+        public List<SalaryRateRequest> GetSalaryRateRequestsByManager(int managerId)
         {
             var myUsersIds = _db.UserManagers.Where(um => um.ManagerId == managerId).Select(um => um.UserId).ToList();
             return _db.SalaryRateRequests.Where(srr => myUsersIds.Contains(srr.SenderId)).ToList();
@@ -59,7 +59,7 @@ namespace WebApplication1.Database.Entities.Services
             _db.SaveChangesAsync();
         }
         
-        public List<SalaryRateRequest> GetSalaryRateRequests()
+        public List<SalaryRateRequest> GetAllSalaryRateRequests()
         {
             return _db.SalaryRateRequests
                 .ToList();
