@@ -32,5 +32,9 @@ namespace WebApplication1.Database.Entities
         public SalaryRate SalaryRate { get; set; }
         public ICollection<SalaryRateRequest> SalaryRateRequests { get; set; }
         public ICollection<UserRole> UserRoles { get; set; }
+        [InverseProperty("User")]
+        public ICollection<UserManager> UsersManagers { get; set; }
+        [InverseProperty("Manager")]
+        public ICollection<UserManager> ManagersUsers { get; set; }
     }
 }

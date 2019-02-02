@@ -8,7 +8,7 @@ namespace WebApplication1.Database.Entities.Services
     public interface IAdminService
     {
         void CreateUser(User user);
-        void AssignDepartment(AssignDepartmentRequest req);
+        void AssignManager(AssignManagerRequest req);
     }
 
 
@@ -21,20 +21,24 @@ namespace WebApplication1.Database.Entities.Services
             _db = db;
         }
 
-        //ПЕРЕДЕЛАТЬ
         public void CreateUser(User user)
         {
-//            user.InvitedAt = DateTimeCreator.getDateTime();
             _db.Users.Add(user);
             _db.SaveChanges();
         }
 
-        public void AssignDepartment(AssignDepartmentRequest req)
+        public void AssignManager(AssignManagerRequest req)
         {
-            var user = _db.Users.FirstOrDefault(u => u.Id == req.UserId);
-            user.DepartmentId = req.DepartmentId;
+            var userManager = new UserManager(req.UserId, req.ManagerId);
+            _db.UserManagers.Add(userManager);
             _db.SaveChanges();
         }
-
+        
+        public void UnAssignManager(AssignManagerRequest req)
+        {
+            var userManager = new UserManager(req.UserId, req.ManagerId);
+            _db.UserManagers.Remove(userManager);
+            _db.SaveChanges();
+        }
     }
 }

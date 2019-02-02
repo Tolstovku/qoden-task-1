@@ -20,9 +20,9 @@ namespace WebApplication1.Database.Entities.Controllers
         }
 
         [HttpPut("user/{userId}")]
-        public void AssignDepartment([FromBody] AssignDepartmentRequest req)
+        public void AssignDepartment([FromBody] AssignManagerRequest req)
         {
-            _adminService.AssignDepartment(req);
+            _adminService.AssignManager(req);
         }
 
         [HttpGet("requests")]

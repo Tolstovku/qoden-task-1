@@ -17,6 +17,7 @@ namespace WebApplication1.src.Database
         public DbSet<SalaryRateRequest> SalaryRateRequests { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<UserManager> UserManagers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,19 +45,9 @@ namespace WebApplication1.src.Database
                 new UserRole {Id = -1, UserId = 123, RoleId = 3},
                 new UserRole {Id = -2, UserId = 124, RoleId = 1}
             );
-            
-//            modelBuilder.Entity<User>()
-//                .HasOne(u => u.Department)
-//                .WithMany(d => d.Users)
-//                .IsRequired()
-//                .HasForeignKey(u => u.DepartmentId);
-//
-//
-//            modelBuilder.Entity<SalaryRate>()
-//                .HasOne(s => s.User)
-//                .WithOne(u => u.SalaryRate)
-//                .IsRequired()
-//                .HasForeignKey<SalaryRate>(s => s.UserId);
+
+
+            modelBuilder.Entity<UserManager>().HasKey(key => new {key.UserId, key.ManagerId});
         }
     }
 }

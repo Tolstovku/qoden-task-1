@@ -36,11 +36,9 @@ namespace WebApplication1.Database.Entities.Services
         
         public List<SalaryRateRequest> GetRateRequests(int managerId)
         {
-            var manager = _db.Users.Include(u => u.Department).SingleOrDefault(u => u.Id == managerId);
-            var managerDepartment = manager.Department;
-            return _db.SalaryRateRequests
-                .Where(srr => srr.Sender.Department == managerDepartment)
-                .ToList();
+            var myUsersIds = _db.UserManagers.Where(um => um.ManagerId == managerId).Select(um => um.UserId).ToList();
+            return _db.SalaryRateRequests.Where(srr => myUsersIds.Contains(srr.SenderId)).ToList();
+            
         }
 
         public void AnswerSalaryRateRequest(AnswerSalaryRateRequestRequest req)
