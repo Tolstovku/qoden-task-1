@@ -53,7 +53,7 @@ namespace WebApplication1.Database.Entities.Services
             salaryRateRequest.Reason = previousSRRInChain.Reason;
             salaryRateRequest.Status = previousSRRInChain.Status;
             _db.SalaryRateRequests.Add(salaryRateRequest);
-            _db.SaveChanges();
+            _db.SaveChangesAsync();
         }
         
         public List<SalaryRateRequest> GetSalaryRateRequests()
@@ -66,7 +66,7 @@ namespace WebApplication1.Database.Entities.Services
         {
             var salaryRateRequest = req.ConvertToSalaryRateRequest();
             _db.SalaryRateRequests.Add(salaryRateRequest);
-            _db.SaveChanges();
+            _db.SaveChangesAsync();
         }
     }
 }

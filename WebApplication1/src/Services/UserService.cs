@@ -28,27 +28,27 @@ namespace WebApplication1.Database.Entities.Services
         public void CreateUser(User user)
         {
             _db.Users.Add(user);
-            _db.SaveChanges();
+            _db.SaveChangesAsync();
         }
 
         public void AssignManager(AssignManagerRequest req)
         {
             var userManager = new UserManager(req.UserId, req.ManagerId);
             _db.UserManagers.Add(userManager);
-            _db.SaveChanges();
+            _db.SaveChangesAsync();
         }
         
         public void UnAssignManager(AssignManagerRequest req)
         {
             var userManager = new UserManager(req.UserId, req.ManagerId);
             _db.UserManagers.Remove(userManager);
-            _db.SaveChanges();
+            _db.SaveChangesAsync();
         }
         
         public void ModifyUser(User user)
         {
             _db.Users.Update(user);
-            _db.SaveChanges();
+            _db.SaveChangesAsync();
         }
         
         public GetProfileResponse GetProfile(int userId)
