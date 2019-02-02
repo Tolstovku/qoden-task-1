@@ -9,30 +9,28 @@ namespace WebApplication1.Database.Entities
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        [Required] public string FirstName { get; set; }
-
-        [Required] public string Lastname { get; set; }
-
+        [Required] 
+        public string FirstName { get; set; }
+        [Required] 
+        public string Lastname { get; set; }
         public string Patronymic { get; set; }
-
-        [Required] public string NickName { get; set; }
-
-        [Required] public string Password { get; set; }
-
-        [Required] public string Email { get; set; }
-
+        [Required] 
+        public string NickName { get; set; }
+        [Required] 
+        public string Password { get; set; }
+        [Required] 
+        public string Email { get; set; }
         public int PhoneNumber { get; set; }
         public DateTime InvitedAt { get; set; }
         public string Description { get; set; }
         public int DepartmentId { get; set; }
-
-        [Required] public Role Role { get; set; }
-
-        [ForeignKey("DepartmentId")] public Department Department { get; set; }
-
+        [Required] 
+        public int RoleId { get; set; }
+        
+        [ForeignKey("DepartmentId")] 
+        public Department Department { get; set; }
         public SalaryRate SalaryRate { get; set; }
-
         public ICollection<SalaryRateRequest> SalaryRateRequests { get; set; }
+        public Role Role { get; set; }
     }
 }

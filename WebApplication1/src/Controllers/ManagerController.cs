@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Database.Entities.Requests;
 using WebApplication1.Database.Entities.Services;
@@ -6,7 +7,7 @@ using WebApplication1.Database.Entities.Services;
 namespace WebApplication1.Database.Entities.Controllers
 {
     [Route("/api/v1/manager")]
-    [MyAuthorize(Role.Manager | Role.Admin)]
+    [Authorize(Roles = "manager,admin")]
     public class ManagerController : Controller
     {
         private readonly IManagerService _managerService;

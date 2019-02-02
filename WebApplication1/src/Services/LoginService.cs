@@ -29,7 +29,7 @@ namespace WebApplication1.Database.Entities.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.NickName),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.Role, user.Role.Name)
             };
             return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
         }

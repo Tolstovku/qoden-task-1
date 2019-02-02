@@ -15,6 +15,7 @@ namespace WebApplication1.src.Database
         public DbSet<User> Users { get; set; }
         public DbSet<SalaryRate> SalaryRates { get; set; }
         public DbSet<SalaryRateRequest> SalaryRateRequests { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,13 +28,17 @@ namespace WebApplication1.src.Database
                 new User
                 {
                     Id = 123, NickName = "Nimatora", Password = "123", FirstName = "Vlad", Lastname = "Nimatora",
-                    Email = "tatata@ayndex.ru", Role = Role.Admin, DepartmentId = -1
+                    Email = "tatata@ayndex.ru", RoleId = 2, DepartmentId = -1
                 },
                 new User
                 {
                     Id = 124, NickName = "Tolstovku", Password = "124", FirstName = "Dan", Lastname = "Tolstovku",
-                    Email = "shitmail@ayndex.ru", Role = Role.User, DepartmentId = -2
+                    Email = "shitmail@ayndex.ru", RoleId = 3, DepartmentId = -2
                 });
+            modelBuilder.Entity<Role>().HasData(
+                new Role
+                    {Id = 1, Name = "user"}, new Role{Id = 2, Name = "manager"}, 
+                new Role{Id = 3, Name = "admin"});
 //            modelBuilder.Entity<User>()
 //                .HasOne(u => u.Department)
 //                .WithMany(d => d.Users)
