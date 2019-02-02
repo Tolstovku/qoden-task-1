@@ -24,14 +24,18 @@ namespace WebApplication1.Database.Entities.Services
 
         public ClaimsPrincipal Login(string nickname, string password)
         {
-            var user = _db.Users.Include(u => u.Role).FirstOrDefault(u => u.NickName == nickname && u.Password == password);
+            var user = _db.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role).FirstOrDefault(u => u.NickName == nickname && u.Password == password);
             if (user == null) throw new AuthenticationException("There is no such user");
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.NickName),
-                new Claim(ClaimTypes.Role, user.Role.Name)
+                new Claim(ClaimTypes.Name, user.NickName)
             };
+            foreach (var userRole in user.UserRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
+                
+            }
             return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
         }
     }

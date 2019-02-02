@@ -7,6 +7,6 @@ namespace WebApplication1.Database.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<User> Users;
+        public ICollection<UserRole> UserRoles;
     }
 }

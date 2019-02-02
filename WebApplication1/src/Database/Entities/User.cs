@@ -25,12 +25,12 @@ namespace WebApplication1.Database.Entities
         public string Description { get; set; }
         public int DepartmentId { get; set; }
         [Required] 
-        public int RoleId { get; set; }
+        public int UserRoleId { get; set; }
         
         [ForeignKey("DepartmentId")] 
         public Department Department { get; set; }
         public SalaryRate SalaryRate { get; set; }
         public ICollection<SalaryRateRequest> SalaryRateRequests { get; set; }
-        public Role Role { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }
