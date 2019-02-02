@@ -41,13 +41,16 @@ namespace WebApplication1.Database.Entities.Services
             
         }
 
+        //Request chain is need for cases when we want to count how many times did a person ask for a raise.
         public void AnswerSalaryRateRequest(AnswerSalaryRateRequestRequest req)
         {
             var salaryRateRequest = req.ConvertToSalaryRateRequest();
             var previousSRRInChain = _db.SalaryRateRequests
                 .Include(srr => srr.Sender)
                 .Include(srr => srr.Reviewer)
-                .LastOrDefault(srr => srr.RequestChainId == salaryRateRequest.RequestChainId);
+                .Where(srr => srr.RequestChainId == salaryRateRequest.RequestChainId)
+                .OrderByDescending(srr => srr.CreatedAt)
+                .FirstOrDefault();
             salaryRateRequest.SuggestedRate = previousSRRInChain.SuggestedRate;
             salaryRateRequest.SenderId = previousSRRInChain.SenderId;
             salaryRateRequest.Reason = previousSRRInChain.Reason;
