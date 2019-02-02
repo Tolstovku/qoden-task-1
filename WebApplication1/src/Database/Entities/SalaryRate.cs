@@ -8,13 +8,16 @@ namespace WebApplication1.Database.Entities
     {
         public int Id { get; set; }
 
-        [Required] public int Rate { get; set; }
+        [Required] 
+        public int Rate { get; set; }
 
-        [Required] public DateTime UpdatedAt { get; set; }
+        [Required] 
+        public DateTime UpdatedAt { get; set; }
 
         public int UserId { get; set; }
         public string Description { get; set; }
 
-        [ForeignKey("UserId")] public User User { get; set; }
+        [ForeignKey("UserId")] 
+        public User User { get; set; }
     }
 }

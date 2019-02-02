@@ -9,7 +9,8 @@ namespace WebApplication1.Database.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required] public string Name { get; set; }
+        [Required] 
+        public string Name { get; set; }
 
         public ICollection<User> Users { get; set; }
     }
