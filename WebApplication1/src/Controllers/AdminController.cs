@@ -10,19 +10,19 @@ namespace WebApplication1.Database.Entities.Controllers
     [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
-        private readonly IAdminService _adminService;
+        private readonly IUserService _userService;
         private readonly ISalaryRateRequestService _salaryRateRequestService;
 
-        public AdminController(IAdminService adminService, ISalaryRateRequestService salaryRateRequestService)
+        public AdminController(IUserService userService, ISalaryRateRequestService salaryRateRequestService)
         {
-            _adminService = adminService;
+            _userService = userService;
             _salaryRateRequestService = salaryRateRequestService;
         }
 
         [HttpPut("user/{userId}")]
         public void AssignDepartment([FromBody] AssignManagerRequest req)
         {
-            _adminService.AssignManager(req);
+            _userService.AssignManager(req);
         }
 
         [HttpGet("requests")]
@@ -34,7 +34,7 @@ namespace WebApplication1.Database.Entities.Controllers
         [HttpPost("user")]
         public void CreateUser([FromBody] User user)
         {
-            _adminService.CreateUser(user);
+            _userService.CreateUser(user);
         }
     }
 }

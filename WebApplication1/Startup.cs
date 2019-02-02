@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebApplication1.Database.Entities;
 using WebApplication1.Database.Entities.Services;
 
 namespace WebApplication1
@@ -21,10 +22,8 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IManagerService, ManagerService>();
-            services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<ILoginService, LoginService>();
-            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<ISalaryRateRequestService, SalaryRateRequestService>();
             services.Configure<Config>(Configuration.GetSection("Database"));
             services.AddMvc();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

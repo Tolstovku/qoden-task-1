@@ -10,25 +10,25 @@ namespace WebApplication1.Database.Entities.Controllers
     [Authorize(Roles = "manager,admin")]
     public class ManagerController : Controller
     {
-        private readonly IManagerService _managerService;
+        private readonly IUserService _userService;
         private readonly ISalaryRateRequestService _salaryRateRequestService;
 
-        public ManagerController(IManagerService managerService, ISalaryRateRequestService salaryRateRequestService)
+        public ManagerController(IUserService userService, ISalaryRateRequestService salaryRateRequestService)
         {
-            _managerService = managerService;
+            _userService = userService;
             _salaryRateRequestService = salaryRateRequestService;
         }
 
         [HttpGet("user/{userId}")]
         public GetUserInfoResponse GetUserInfo(int userId)
         {
-            return _managerService.GetUserInfo(userId);
+            return _userService.GetUserInfo(userId);
         }
 
         [HttpPost("user")]
         public void ModifyUser([FromBody] User user)
         {
-            _managerService.ModifyUser(user);
+            _userService.ModifyUser(user);
         }
 
         [HttpGet("requests/{managerId}")]
