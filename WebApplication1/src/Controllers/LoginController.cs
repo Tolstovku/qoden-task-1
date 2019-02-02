@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Database.Entities.Requests;
 using WebApplication1.Database.Entities.Services;
 
 namespace WebApplication1.Database.Entities.Controllers
@@ -16,9 +17,9 @@ namespace WebApplication1.Database.Entities.Controllers
         }
 
         [HttpPost("login")]
-        public async void Login([FromForm] string nickname, [FromForm] string password)
+        public async void Login([FromBody] LoginRequest req)
         {
-            var claimsPrincipal = _loginService.Login(nickname, password);
+            var claimsPrincipal = _loginService.Login(req);
             await HttpContext.SignInAsync(claimsPrincipal);
         }
 

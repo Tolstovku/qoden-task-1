@@ -4,13 +4,14 @@ using System.Security.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Database.Entities.Requests;
 using WebApplication1.src.Database;
 
 namespace WebApplication1.Database.Entities.Services
 {
     public interface ILoginService
     {
-        ClaimsPrincipal Login(string nickname, string password);
+        ClaimsPrincipal Login(LoginRequest request);
     }
 
     public class LoginService : ILoginService
@@ -22,9 +23,10 @@ namespace WebApplication1.Database.Entities.Services
             _db = db;
         }
 
-        public ClaimsPrincipal Login(string nickname, string password)
+        public ClaimsPrincipal Login(LoginRequest req)
         {
-            var user = _db.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role).FirstOrDefault(u => u.NickName == nickname && u.Password == password);
+            var user = _db.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
+                .FirstOrDefault(u => u.NickName == req.Nickname && u.Password == req.Password);
             if (user == null) throw new AuthenticationException("There is no such user");
 
             var claims = new List<Claim>
