@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.src.Database;
 
 namespace WebApplication1.Database.Entities.Services
@@ -23,7 +24,7 @@ namespace WebApplication1.Database.Entities.Services
 
         public ClaimsPrincipal Login(string nickname, string password)
         {
-            var user = _db.Users.FirstOrDefault(u => u.NickName == nickname && u.Password == password);
+            var user = _db.Users.Include(u => u.Role).FirstOrDefault(u => u.NickName == nickname && u.Password == password);
             if (user == null) throw new AuthenticationException("There is no such user");
 
             var claims = new List<Claim>
