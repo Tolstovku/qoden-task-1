@@ -17,7 +17,7 @@ namespace WebApplication1.Database.Entities
         [Required] 
         public string NickName { get; set; }
         [Required] 
-        public string Password { get; set; }
+        public int PasswordId { get; set; }
         [Required] 
         public string Email { get; set; }
         public int PhoneNumber { get; set; }
@@ -36,5 +36,6 @@ namespace WebApplication1.Database.Entities
         public ICollection<UserManager> UsersManagers { get; set; }
         [InverseProperty("Manager")]
         public ICollection<UserManager> ManagersUsers { get; set; }
+        public Password Password { get; set; }
     }
 }

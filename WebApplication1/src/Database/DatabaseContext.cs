@@ -18,23 +18,35 @@ namespace WebApplication1.src.Database
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<UserManager> UserManagers { get; set; }
+        public DbSet<Password> Passwords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             this.ApplySnakeCase(modelBuilder);
             this.ApplyOnModelCreatingFromAllEntities(modelBuilder);
+
+            var danPass = "123";
+            
+            var salt= new byte[] {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+            var pass1 = PasswordGenerator.HashPassword("123", salt);
+            var pass2 = PasswordGenerator.HashPassword("124", salt);
+
+
+            modelBuilder.Entity<Password>()
+                .HasData(new Password {Id = -1, Salt = salt, HashedPassword = pass1},
+                    new Password {Id = -2, Salt = salt, HashedPassword = pass2});
             modelBuilder.Entity<Department>()
                 .HasData(new Department {Id = -2, Name = "Frontend"},
                     new Department {Id = -1, Name = "Backend"});
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
-                    Id = 123, NickName = "Nimatora", Password = "123", FirstName = "Vlad", Lastname = "Nimatora",
+                    Id = 123, NickName = "Nimatora", PasswordId = -1, FirstName = "Vlad", Lastname = "Nimatora",
                     Email = "tatata@ayndex.ru",  UserRoleId= -1, DepartmentId = -1
                 },
                 new User
                 {
-                    Id = 124, NickName = "Tolstovku", Password = "124", FirstName = "Dan", Lastname = "Tolstovku",
+                    Id = 124, NickName = "Tolstovku", PasswordId = -2, FirstName = "Dan", Lastname = "Tolstovku",
                     Email = "shitmail@ayndex.ru", UserRoleId = -2, DepartmentId = -2
                 });
             modelBuilder.Entity<Role>().HasData(

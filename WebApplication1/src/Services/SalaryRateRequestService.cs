@@ -21,6 +21,7 @@ namespace WebApplication1.Database.Entities.Services
 
         public SalaryRateRequestService(DatabaseContext db)
         {
+            
             _db = db;
         }
 

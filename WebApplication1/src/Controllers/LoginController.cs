@@ -1,5 +1,8 @@
+using System.Security.Authentication;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Internal;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Database.Entities.Requests;
 using WebApplication1.Database.Entities.Services;
@@ -17,10 +20,19 @@ namespace WebApplication1.Database.Entities.Controllers
         }
 
         [HttpPost("login")]
-        public async void Login([FromBody] LoginRequest req)
+        public async Task<ActionResult> Login([FromBody] LoginRequest req)
         {
-            var claimsPrincipal = _loginService.Login(req);
-            await HttpContext.SignInAsync(claimsPrincipal);
+            try
+            {
+                var claimsPrincipal = _loginService.Login(req);
+                await HttpContext.SignInAsync(claimsPrincipal);
+            }
+            catch (AuthenticationException e)
+            {
+                Response.StatusCode = 401;
+                return Json(e.Message);
+            }
+            return Ok();
         }
 
 
