@@ -11,12 +11,10 @@ namespace WebApplication1.Database.Entities.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        private readonly ISalaryRateRequestService _salaryRateRequestService;
 
-        public UserController(IUserService userService, ISalaryRateRequestService salaryRateRequestService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _salaryRateRequestService = salaryRateRequestService;
         }
 
         [HttpGet("{userId}")]
@@ -25,16 +23,34 @@ namespace WebApplication1.Database.Entities.Controllers
             return _userService.GetProfile(userId);
         }
 
-        [HttpPut("requests")]
-        public void CreateSalaryRateRequests([FromBody] CreateSalaryRateRequestByUserRequest req)
+        [HttpGet("profile/{userId}")]
+        [Authorize(Roles = "manager, admin")]
+        public GetUserInfoResponse GetUserInfo(int userId)
         {
-            _salaryRateRequestService.CreateSalaryRateRequest(req);
+            return _userService.GetUserInfo(userId);
         }
 
-        [HttpGet("requests/{userId}")]
-        public List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequests(int userId)
+        [HttpPut("modify")]
+        [Authorize(Roles = "manager, admin")]
+        public void ModifyUser([FromBody] User user)
         {
-            return _salaryRateRequestService.GetSalaryRateRequestsByUser(userId);
+            _userService.ModifyUser(user);
         }
+        
+        [HttpPut("{userId}")]
+        [Authorize(Roles = "admin")]
+        public void AssignManager([FromBody] AssignManagerRequest req)
+        {
+            _userService.AssignManager(req);
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public void CreateUser([FromBody] User user)
+        {
+            _userService.CreateUser(user);
+        }
+        
     }
 }
