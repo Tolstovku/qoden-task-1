@@ -26,8 +26,6 @@ namespace WebApplication1.src.Database
             this.ApplyOnModelCreatingFromAllEntities(modelBuilder);
             
             modelBuilder.Entity<UserManager>().HasKey(key => new {key.UserId, key.ManagerId});
-//            modelBuilder.Entity<User>().HasAlternateKey(u => u.NickName);
-//            modelBuilder.Entity<User>().HasAlternateKey(u => u.Email);
             modelBuilder.Entity<User>().HasIndex(u => u.PhoneNumber).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.NickName).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();

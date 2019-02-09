@@ -2,7 +2,6 @@ using System;
 
 namespace WebApplication1.Database.Entities.Requests
 {
-    //Work in progress
     public class GetSalaryRateRequestsByUserResponse
     {
         public int SuggestedRate { get; set; }

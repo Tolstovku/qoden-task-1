@@ -42,7 +42,6 @@ namespace WebApplication1.Database.Entities.Services
             
         }
 
-        //Request chain is need for cases when we want to count how many times did a person ask for a raise.
         public void AnswerSalaryRateRequest(AnswerSalaryRateRequestRequest req)
         {
             var salaryRateRequest = req.ConvertToSalaryRateRequest();
