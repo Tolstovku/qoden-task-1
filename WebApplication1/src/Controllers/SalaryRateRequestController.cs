@@ -17,7 +17,7 @@ namespace WebApplication1.Database.Entities.Controllers
             _salaryRateRequestService = salaryRateRequestService;
         }
         
-        [HttpPut("user/requests")]
+        [HttpPost("user/requests")]
         public void CreateSalaryRateRequests([FromBody] CreateSalaryRateRequestByUserRequest req)
         {
             _salaryRateRequestService.CreateSalaryRateRequest(req);
@@ -36,7 +36,7 @@ namespace WebApplication1.Database.Entities.Controllers
             return _salaryRateRequestService.GetSalaryRateRequestsByManager(managerId);
         }
 
-        [HttpPut("manager/requests")]
+        [HttpPost("manager/requests")]
         [Authorize(Roles = "manager, admin")]
         public void AnswerSalaryRateRequest([FromBody] AnswerSalaryRateRequestRequest req)
         {
