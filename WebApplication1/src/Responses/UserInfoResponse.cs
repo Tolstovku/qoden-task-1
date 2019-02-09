@@ -2,9 +2,9 @@ using System;
 
 namespace WebApplication1.Database.Entities.Requests
 {
-    public class GetUserInfoResponse
+    public class UserInfoResponse
     {
-        public GetUserInfoResponse(User user)
+        public UserInfoResponse(User user)
         {
             FirstName = user.FirstName;
             Lastname = user.Lastname;

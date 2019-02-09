@@ -12,8 +12,8 @@ namespace WebApplication1.Database.Entities.Services
         void AssignManager(AssignManagerRequest req);
         void UnAssignManager(AssignManagerRequest req);
         void ModifyUser(User user);
-        GetProfileResponse GetProfile(int userId);
-        GetUserInfoResponse GetUserInfo(int userId);
+        ProfileResponse GetProfile(int userId);
+        UserInfoResponse GetUserInfo(int userId);
     }
     
     
@@ -54,16 +54,16 @@ namespace WebApplication1.Database.Entities.Services
             _db.SaveChangesAsync();
         }
         
-        public GetProfileResponse GetProfile(int userId)
+        public ProfileResponse GetProfile(int userId)
         {
             var user = _db.Users.Include(u => u.Department).FirstOrDefault(u => u.Id == userId);
-            return new GetProfileResponse(user);
+            return new ProfileResponse(user);
         }
         
 
-        public GetUserInfoResponse GetUserInfo(int userId)
+        public UserInfoResponse GetUserInfo(int userId)
         {
-            return new GetUserInfoResponse(_db.Users.Include(u => u.Department).FirstOrDefault(u => u.Id == userId));
+            return new UserInfoResponse(_db.Users.Include(u => u.Department).FirstOrDefault(u => u.Id == userId));
         }
 
         private void CheckUsersUniqueFields(User user)

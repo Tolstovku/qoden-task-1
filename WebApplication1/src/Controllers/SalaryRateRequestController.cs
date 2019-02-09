@@ -18,13 +18,13 @@ namespace WebApplication1.Database.Entities.Controllers
         }
         
         [HttpPost("user/requests")]
-        public void CreateSalaryRateRequests([FromBody] CreateSalaryRateRequestByUserRequest req)
+        public void CreateSalaryRateRequests([FromBody] UserCreateSalaryRateRequestRequest req)
         {
             _salaryRateRequestService.CreateSalaryRateRequest(req);
         }
 
         [HttpGet("user/requests/{userId}")]
-        public List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequestsByUser(int userId)
+        public List<UserSalaryRateRequestsResponse> GetSalaryRateRequestsByUser(int userId)
         {
             return _salaryRateRequestService.GetSalaryRateRequestsByUser(userId);
         }

@@ -2,9 +2,9 @@ using System;
 
 namespace WebApplication1.Database.Entities.Requests
 {
-    public class GetProfileResponse
+    public class ProfileResponse
     {
-        public GetProfileResponse(User user)
+        public ProfileResponse(User user)
         {
             FirstName = user.FirstName;
             Lastname = user.Lastname;

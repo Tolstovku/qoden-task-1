@@ -8,11 +8,11 @@ namespace WebApplication1.Database.Entities.Services
 {
     public interface ISalaryRateRequestService
     {
-        List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequestsByUser(int userId);
+        List<UserSalaryRateRequestsResponse> GetSalaryRateRequestsByUser(int userId);
         List<SalaryRateRequest> GetSalaryRateRequestsByManager(int managerId);
         void AnswerSalaryRateRequest(AnswerSalaryRateRequestRequest req);
         List<SalaryRateRequest> GetAllSalaryRateRequests();
-        void CreateSalaryRateRequest(CreateSalaryRateRequestByUserRequest req);
+        void CreateSalaryRateRequest(UserCreateSalaryRateRequestRequest req);
     }
     
     public class SalaryRateRequestService : ISalaryRateRequestService
@@ -25,13 +25,13 @@ namespace WebApplication1.Database.Entities.Services
             _db = db;
         }
 
-        public List<GetSalaryRateRequestsByUserResponse> GetSalaryRateRequestsByUser(int userId)
+        public List<UserSalaryRateRequestsResponse> GetSalaryRateRequestsByUser(int userId)
         {
             var salaryRateRequests =  _db.SalaryRateRequests
                 .Where(srr => srr.SenderId == userId)
                 .ToList();
-            var responseSRRsList = new List<GetSalaryRateRequestsByUserResponse>();
-            salaryRateRequests.ForEach(srr =>  responseSRRsList.Add(new GetSalaryRateRequestsByUserResponse(srr)));
+            var responseSRRsList = new List<UserSalaryRateRequestsResponse>();
+            salaryRateRequests.ForEach(srr =>  responseSRRsList.Add(new UserSalaryRateRequestsResponse(srr)));
             return responseSRRsList;
         }
         
@@ -54,7 +54,7 @@ namespace WebApplication1.Database.Entities.Services
             salaryRateRequest.SuggestedRate = previousSRRInChain.SuggestedRate;
             salaryRateRequest.SenderId = previousSRRInChain.SenderId;
             salaryRateRequest.Reason = previousSRRInChain.Reason;
-            salaryRateRequest.Status = previousSRRInChain.Status;
+            salaryRateRequest.SalaryRateRequestStatus = previousSRRInChain.SalaryRateRequestStatus;
             _db.SalaryRateRequests.Add(salaryRateRequest);
             _db.SaveChangesAsync();
         }
@@ -65,7 +65,7 @@ namespace WebApplication1.Database.Entities.Services
                 .ToList();
         }
         
-        public void CreateSalaryRateRequest(CreateSalaryRateRequestByUserRequest req)
+        public void CreateSalaryRateRequest(UserCreateSalaryRateRequestRequest req)
         {
             var salaryRateRequest = req.ConvertToSalaryRateRequest();
             _db.SalaryRateRequests.Add(salaryRateRequest);

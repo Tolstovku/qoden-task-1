@@ -21,14 +21,14 @@ namespace WebApplication1.Database.Entities.Controllers
         }
 
         [HttpGet("{userId}")]
-        public GetProfileResponse GetProfile(int userId)
+        public ProfileResponse GetProfile(int userId)
         {
             return _userService.GetProfile(userId);
         }
 
         [HttpGet("profile/{userId}")]
         [Authorize(Roles = "manager, admin")]
-        public GetUserInfoResponse GetUserInfo(int userId)
+        public UserInfoResponse GetUserInfo(int userId)
         {
             return _userService.GetUserInfo(userId);
         }
@@ -49,11 +49,18 @@ namespace WebApplication1.Database.Entities.Controllers
             return Ok();
         }
         
-        [HttpPut("{userId}")]
+        [HttpPut("/assign")]
         [Authorize(Roles = "admin")]
         public void AssignManager([FromBody] AssignManagerRequest req)
         {
             _userService.AssignManager(req);
+        }
+        
+        [HttpPut("/unassign")]
+        [Authorize(Roles = "admin")]
+        public void UnAssignManager([FromBody] AssignManagerRequest req)
+        {
+            _userService.UnAssignManager(req);
         }
 
 

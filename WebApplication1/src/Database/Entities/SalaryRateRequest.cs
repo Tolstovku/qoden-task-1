@@ -14,7 +14,7 @@ namespace WebApplication1.Database.Entities
         [Required] 
         public int SuggestedRate { get; set; }
         [Required] 
-        public Status Status { get; set; }
+        public SalaryRateRequestStatus SalaryRateRequestStatus { get; set; }
         [Required] 
         public DateTime CreatedAt { get; set; }
         public int? ReviewerId { get; set; }
