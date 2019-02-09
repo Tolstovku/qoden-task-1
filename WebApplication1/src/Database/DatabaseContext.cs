@@ -29,15 +29,20 @@ namespace WebApplication1.src.Database
             modelBuilder.Entity<User>().HasIndex(u => u.PhoneNumber).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.NickName).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
-            
-            var salt= new byte[] {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-            var pass1 = PasswordGenerator.HashPassword("123", salt);
-            var pass2 = PasswordGenerator.HashPassword("124", salt);
+
+
+            var salt1 = PasswordGenerator.GenerateSalt();
+            var salt2 = PasswordGenerator.GenerateSalt();
+            var salt3 = PasswordGenerator.GenerateSalt();
+            var pass1 = PasswordGenerator.HashPassword("123", salt1);
+            var pass2 = PasswordGenerator.HashPassword("123", salt2);
+            var pass3 = PasswordGenerator.HashPassword("123", salt3);
             
             modelBuilder.Entity<Password>()
-                .HasData(new Password {Id = -1, Salt = salt, HashedPassword = pass1},
-                    new Password {Id = -2, Salt = salt, HashedPassword = pass2},
-                    new Password {Id = -3, Salt = salt, HashedPassword = pass2});
+                .HasData(new Password {Id = -1, Salt = salt1, HashedPassword = pass1},
+                    new Password {Id = -2, Salt = salt2, HashedPassword = pass2},
+                    new Password {Id = -3, Salt = salt3, HashedPassword = pass3});
+            
             modelBuilder.Entity<Department>()
                 .HasData(new Department {Id = -2, Name = "Frontend"},
                     new Department {Id = -1, Name = "Backend"});
