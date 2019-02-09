@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Database.Entities.Requests;
@@ -32,9 +35,18 @@ namespace WebApplication1.Database.Entities.Controllers
 
         [HttpPut("modify")]
         [Authorize(Roles = "manager, admin")]
-        public void ModifyUser([FromBody] User user)
+        public async Task<ActionResult> ModifyUser([FromBody] User user)
         {
-            _userService.ModifyUser(user);
+            try
+            {
+                _userService.ModifyUser(user);
+            }
+            catch (DuplicateNameException e)
+            {
+                Response.StatusCode = 409;
+                return Json(e.Message);
+            }
+            return Ok();
         }
         
         [HttpPut("{userId}")]
@@ -47,9 +59,18 @@ namespace WebApplication1.Database.Entities.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public void CreateUser([FromBody] User user)
+        public async Task<ActionResult> CreateUser([FromBody] User user)
         {
+            try
+            {
             _userService.CreateUser(user);
+            }
+            catch (DuplicateNameException e)
+            {
+                Response.StatusCode = 409;
+                return Json(e.Message);
+            }
+            return Ok();
         }
         
     }

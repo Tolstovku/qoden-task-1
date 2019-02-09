@@ -26,7 +26,7 @@ namespace WebApplication1.Database.Entities.Services
         public ClaimsPrincipal Login(LoginRequest req)
         {
             var user = _db.Users.Include(u => u.Password).Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
-                .FirstOrDefault(u => u.NickName == req.Nickname);
+                .FirstOrDefault(u => u.NickName == req.NicknameOrEmail || u.Email == req.NicknameOrEmail);
             if (user == null) throw new AuthenticationException("There is no such user");
             var hashedPass = PasswordGenerator.HashPassword(req.Password, user.Password.Salt);
             if (hashedPass != user.Password.HashedPassword) throw new AuthenticationException("Wrong password");

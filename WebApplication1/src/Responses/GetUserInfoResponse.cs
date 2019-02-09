@@ -22,7 +22,7 @@ namespace WebApplication1.Database.Entities.Requests
         public string Patronymic { get; set; }
         public string NickName { get; set; }
         public string Email { get; set; }
-        public int PhoneNumber { get; set; }
+        public int? PhoneNumber { get; set; }
         public DateTime InvitedAt { get; set; }
         public string Description { get; set; }
         public string DepartmentName { get; set; }

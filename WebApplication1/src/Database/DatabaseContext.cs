@@ -24,17 +24,22 @@ namespace WebApplication1.src.Database
         {
             this.ApplySnakeCase(modelBuilder);
             this.ApplyOnModelCreatingFromAllEntities(modelBuilder);
-
-            var danPass = "123";
+            
+            modelBuilder.Entity<UserManager>().HasKey(key => new {key.UserId, key.ManagerId});
+//            modelBuilder.Entity<User>().HasAlternateKey(u => u.NickName);
+//            modelBuilder.Entity<User>().HasAlternateKey(u => u.Email);
+            modelBuilder.Entity<User>().HasIndex(u => u.PhoneNumber).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(u => u.NickName).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
             
             var salt= new byte[] {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
             var pass1 = PasswordGenerator.HashPassword("123", salt);
             var pass2 = PasswordGenerator.HashPassword("124", salt);
-
-
+            
             modelBuilder.Entity<Password>()
                 .HasData(new Password {Id = -1, Salt = salt, HashedPassword = pass1},
-                    new Password {Id = -2, Salt = salt, HashedPassword = pass2});
+                    new Password {Id = -2, Salt = salt, HashedPassword = pass2},
+                    new Password {Id = -3, Salt = salt, HashedPassword = pass2});
             modelBuilder.Entity<Department>()
                 .HasData(new Department {Id = -2, Name = "Frontend"},
                     new Department {Id = -1, Name = "Backend"});
@@ -59,7 +64,6 @@ namespace WebApplication1.src.Database
             );
 
 
-            modelBuilder.Entity<UserManager>().HasKey(key => new {key.UserId, key.ManagerId});
         }
     }
 }

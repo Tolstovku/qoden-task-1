@@ -20,7 +20,7 @@ namespace WebApplication1.Database.Entities
         public int PasswordId { get; set; }
         [Required] 
         public string Email { get; set; }
-        public int PhoneNumber { get; set; }
+        public int? PhoneNumber { get; set; }
         public DateTime InvitedAt { get; set; }
         public string Description { get; set; }
         public int DepartmentId { get; set; }
