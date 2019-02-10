@@ -10,14 +10,14 @@ namespace WebApplication1.Database.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required] 
+        public string Password { get; set; }
+        [Required] 
         public string FirstName { get; set; }
         [Required] 
         public string Lastname { get; set; }
         public string Patronymic { get; set; }
         [Required] 
         public string NickName { get; set; }
-        [Required] 
-        public int PasswordId { get; set; }
         [Required] 
         public string Email { get; set; }
         public int? PhoneNumber { get; set; }
@@ -36,6 +36,5 @@ namespace WebApplication1.Database.Entities
         public ICollection<UserManager> UsersManagers { get; set; }
         [InverseProperty("Manager")]
         public ICollection<UserManager> ManagersUsers { get; set; }
-        public Password Password { get; set; }
     }
 }

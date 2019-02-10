@@ -1,23 +1,21 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApplication1.Database.Entities
 {
     public static class PasswordGenerator
     {
-        public static byte[] GenerateSalt()
+        public static string HashPassword(string password)
         {
-            var salt = new byte[16];
-            new RNGCryptoServiceProvider().GetBytes(salt);
-            return salt;
+            return new PasswordHasher<User>().HashPassword(null, password);
+            
         }
 
-        public static string HashPassword(string password, byte[] salt)
+        public static PasswordVerificationResult VerifyPassword(string providedPassword, string hashedPassword)
         {
-        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 1000);
-        var hashBytes = pbkdf2.GetBytes(36);
-        return Convert.ToBase64String(hashBytes);
+            return new PasswordHasher<User>().VerifyHashedPassword(null, hashedPassword, providedPassword);
         }
     }
 }
