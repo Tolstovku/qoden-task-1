@@ -23,16 +23,18 @@ namespace WebApplication1.Database.Entities.Controllers
             _salaryRateRequestService.CreateSalaryRateRequest(req);
         }
 
-        [HttpGet("user/requests/{userId}")]
-        public List<UserSalaryRateRequestsResponse> GetSalaryRateRequestsByUser(int userId)
+        [HttpGet("user/requests")]
+        public List<UserSalaryRateRequestsResponse> GetSalaryRateRequestsByUser()
         {
+            var userId = this.GetLoggedUserId();
             return _salaryRateRequestService.GetSalaryRateRequestsByUser(userId);
         }
         
-        [HttpGet("manager/requests/{managerId}")]
+        [HttpGet("manager/requests")]
         [Authorize(Roles = "manager, admin")]
-        public List<SalaryRateRequest> GetSalaryRateRequestsByManager(int managerId)
+        public List<SalaryRateRequest> GetSalaryRateRequestsByManager()
         {
+            var managerId = this.GetLoggedUserId();
             return _salaryRateRequestService.GetSalaryRateRequestsByManager(managerId);
         }
 
