@@ -10,7 +10,7 @@ using WebApplication1.Database.Entities.Services;
 namespace WebApplication1.Database.Entities.Controllers
 {
     [Route("/api/v1/user")]
-    [Authorize(Roles = "user,admin")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -49,14 +49,14 @@ namespace WebApplication1.Database.Entities.Controllers
             return Ok();
         }
         
-        [HttpPut("/assign")]
+        [HttpPost("assign")]
         [Authorize(Roles = "admin")]
         public void AssignManager([FromBody] AssignManagerRequest req)
         {
             _userService.AssignManager(req);
         }
         
-        [HttpPut("/unassign")]
+        [HttpPost("unassign")]
         [Authorize(Roles = "admin")]
         public void UnAssignManager([FromBody] AssignManagerRequest req)
         {
