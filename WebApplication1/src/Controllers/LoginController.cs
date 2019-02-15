@@ -20,24 +20,16 @@ namespace WebApplication1.Database.Entities.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] LoginRequest req)
+        public async Task Login([FromBody] LoginRequest req)
         {
-            try
-            {
-                var claimsPrincipal = _loginService.Login(req);
+                var claimsPrincipal = await _loginService.Login(req);
                 await HttpContext.SignInAsync(claimsPrincipal);
-            }
-            catch (AuthenticationException e)
-            {
-                Response.StatusCode = 401;
-                return Json(e.Message);
-            }
-            return Ok();
+                Ok();
         }
 
 
         [HttpPost("logout")]
-        public async void Logout()
+        public async Task Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }

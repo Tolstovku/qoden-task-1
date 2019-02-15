@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Qoden.Validation.AspNetCore;
 using WebApplication1.Database.Entities;
 using WebApplication1.Database.Entities.Services;
 
@@ -25,13 +26,13 @@ namespace WebApplication1
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ISalaryRateRequestService, SalaryRateRequestService>();
             services.Configure<Config>(Configuration.GetSection("Database"));
-            services.AddMvc();
+            services.AddMvc(o => o.Filters.Add<ApiExceptionFilterAttribute>());
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/api/v1/login";
                     options.LogoutPath = "/api/v1/logout";
-                    options.Events.OnRedirectToAccessDenied = ctx =>
+                    options.Events.OnRedirectToLogin = ctx =>
                     {
                         ctx.Response.StatusCode = 403;
                         return Task.CompletedTask;

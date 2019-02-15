@@ -21,63 +21,45 @@ namespace WebApplication1.Database.Entities.Controllers
         }
 
         [HttpGet("{userId}")]
-        public ProfileResponse GetProfile(int userId)
+        public async Task<ProfileResponse> GetProfile(int userId)
         {
-            return _userService.GetProfile(userId);
+            return await _userService.GetProfile(userId);
         }
 
         [HttpGet("profile/{userId}")]
         [Authorize(Roles = "manager, admin")]
-        public UserInfoResponse GetUserInfo(int userId)
+        public async Task<UserInfoResponse> GetUserInfo(int userId)
         {
-            return _userService.GetUserInfo(userId);
+            return await _userService.GetUserInfo(userId);
         }
 
         [HttpPut("modify")]
         [Authorize(Roles = "manager, admin")]
-        public async Task<ActionResult> ModifyUser([FromBody] User user)
+        public async Task ModifyUser([FromBody] User user)
         {
-            try
-            {
-                _userService.ModifyUser(user);
-            }
-            catch (DuplicateNameException e)
-            {
-                Response.StatusCode = 409;
-                return Json(e.Message);
-            }
-            return Ok();
+                await _userService.ModifyUser(user);
         }
         
         [HttpPost("assign")]
         [Authorize(Roles = "admin")]
-        public void AssignManager([FromBody] AssignManagerRequest req)
+        public async Task AssignManager([FromBody] AssignManagerRequest req)
         {
-            _userService.AssignManager(req);
+            await _userService.AssignManager(req);
         }
         
         [HttpPost("unassign")]
         [Authorize(Roles = "admin")]
-        public void UnAssignManager([FromBody] AssignManagerRequest req)
+        public async Task UnAssignManager([FromBody] AssignManagerRequest req)
         {
-            _userService.UnAssignManager(req);
+            await _userService.UnAssignManager(req);
         }
 
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult> CreateUser([FromBody] User user)
+        public async Task CreateUser([FromBody] User user)
         {
-            try
-            {
-            _userService.CreateUser(user);
-            }
-            catch (DuplicateNameException e)
-            {
-                Response.StatusCode = 409;
-                return Json(e.Message);
-            }
-            return Ok();
+            await _userService.CreateUser(user);
         }
         
     }

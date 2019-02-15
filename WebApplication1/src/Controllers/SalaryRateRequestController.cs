@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Database.Entities.Requests;
@@ -18,39 +19,41 @@ namespace WebApplication1.Database.Entities.Controllers
         }
         
         [HttpPost("user/requests")]
-        public void CreateSalaryRateRequests([FromBody] UserCreateSalaryRateRequestRequest req)
+        public async Task CreateSalaryRateRequests([FromBody] UserCreateSalaryRateRequestRequest req)
         {
-            _salaryRateRequestService.CreateSalaryRateRequest(req);
+            req.SenderId = this.GetLoggedUserId();
+            await _salaryRateRequestService.CreateSalaryRateRequest(req);
         }
 
         [HttpGet("user/requests")]
-        public List<UserSalaryRateRequestsResponse> GetSalaryRateRequestsByUser()
+        public async Task<List<UserSalaryRateRequestsResponse>> GetSalaryRateRequestsByUser()
         {
             var userId = this.GetLoggedUserId();
-            return _salaryRateRequestService.GetSalaryRateRequestsByUser(userId);
+            return await _salaryRateRequestService.GetSalaryRateRequestsByUser(userId);
         }
         
         [HttpGet("manager/requests")]
         [Authorize(Roles = "manager, admin")]
-        public List<SalaryRateRequest> GetSalaryRateRequestsByManager()
+        public async Task<List<SalaryRateRequest>> GetSalaryRateRequestsByManager()
         {
             var managerId = this.GetLoggedUserId();
-            return _salaryRateRequestService.GetSalaryRateRequestsByManager(managerId);
+            return await _salaryRateRequestService.GetSalaryRateRequestsByManager(managerId);
         }
 
         [HttpPost("manager/requests")]
         [Authorize(Roles = "manager, admin")]
-        public void AnswerSalaryRateRequest([FromBody] AnswerSalaryRateRequestRequest req)
+        public async Task AnswerSalaryRateRequest([FromBody] AnswerSalaryRateRequestRequest req)
         {
-            _salaryRateRequestService.AnswerSalaryRateRequest(req);
+            req.ReviewerId = this.GetLoggedUserId();
+            await _salaryRateRequestService.AnswerSalaryRateRequest(req);
         }
         
         
-        [HttpGet("/admin/requests")]
+        [HttpGet("admin/requests")]
         [Authorize(Roles = "admin")]
-        public List<SalaryRateRequest> GetAllSalaryRateRequests()
+        public async Task<List<SalaryRateRequest>> GetAllSalaryRateRequests()
         {
-            return _salaryRateRequestService.GetAllSalaryRateRequests();
+            return await _salaryRateRequestService.GetAllSalaryRateRequests();
         }
         
     }

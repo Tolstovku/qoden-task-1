@@ -1,6 +1,10 @@
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
+using Lesson1.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Qoden.Validation;
+using Qoden.Validation.AspNetCore;
 using WebApplication1.Database.Entities.Requests;
 using WebApplication1.src.Database;
 
@@ -8,85 +12,87 @@ namespace WebApplication1.Database.Entities.Services
 {
     public interface IUserService
     {
-        void CreateUser(User user);
-        void AssignManager(AssignManagerRequest req);
-        void UnAssignManager(AssignManagerRequest req);
-        void ModifyUser(User user);
-        ProfileResponse GetProfile(int userId);
-        UserInfoResponse GetUserInfo(int userId);
+        Task CreateUser(User user);
+        Task AssignManager(AssignManagerRequest req);
+        Task UnAssignManager(AssignManagerRequest req);
+        Task ModifyUser(User user);
+        Task<ProfileResponse> GetProfile(int userId);
+        Task<UserInfoResponse> GetUserInfo(int userId);
     }
     
     
     public class UserService : IUserService
     {
         private readonly DatabaseContext _db;
+        private const string UserNotFoundMsg = "User not found";
 
         public UserService(DatabaseContext db)
         {
             _db = db;
         }
         
-        public void CreateUser(User user)
+        public async Task CreateUser(User user)
         {
+            user.Validate(new Validator());
             CheckUsersUniqueFields(user);
             _db.Users.Add(user);
-            _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
-        public void AssignManager(AssignManagerRequest req)
+        public async Task AssignManager(AssignManagerRequest req)
         {
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == req.UserId);
+            var manager = await _db.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
+                .FirstOrDefaultAsync(u => u.Id == req.ManagerId);
+            Assert.Property(user).NotNull(UserNotFoundMsg);
+            Assert.Property(manager).NotNull("Manager not found");
+            var managerRole = manager.UserRoles.FirstOrDefault(ur => ur.Role.Name == "Manager");
+            Assert.Property(managerRole).NotNull("User with specified ID is not a manager");
+            
             var userManager = new UserManager(req.UserId, req.ManagerId);
             _db.UserManagers.Add(userManager);
-            _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
         
-        public void UnAssignManager(AssignManagerRequest req)
+        public async Task UnAssignManager(AssignManagerRequest req)
         {
             var userManager = new UserManager(req.UserId, req.ManagerId);
+            Assert.Property(userManager).NotNull("Specified relationship could not be found");
             _db.UserManagers.Remove(userManager);
-            _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
         
-        public void ModifyUser(User user)
+        public async Task ModifyUser(User user)
         {
+            Assert.Property(user).NotNull(UserNotFoundMsg);
+            user.Validate(new Validator());
             CheckUsersUniqueFields(user);
             _db.Users.Update(user);
-            _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
         
-        public ProfileResponse GetProfile(int userId)
+        public async Task<ProfileResponse> GetProfile(int userId)
         {
-            var user = _db.Users.Include(u => u.Department).FirstOrDefault(u => u.Id == userId);
+            var user = await _db.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == userId);
             return new ProfileResponse(user);
         }
         
 
-        public UserInfoResponse GetUserInfo(int userId)
+        public async Task<UserInfoResponse> GetUserInfo(int userId)
         {
-            return new UserInfoResponse(_db.Users.Include(u => u.Department).FirstOrDefault(u => u.Id == userId));
+            var user = await _db.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == userId);
+            Assert.Property(user).NotNull(UserNotFoundMsg);
+            return new UserInfoResponse(user);
         }
-
-        private void CheckUsersUniqueFields(User user)
+        
+        private async Task CheckUsersUniqueFields(User user)
         {
-            var existingUser = _db.Users.FirstOrDefault(u => u.Email == user.Email);
-            if (existingUser != null)
-            {
-                _db.SaveChangesAsync();
-                throw new DuplicateNameException("User with such email already exists");
-            }
-            existingUser = _db.Users.FirstOrDefault(u => u.NickName == user.NickName);
-            if (existingUser != null)
-            {
-                _db.SaveChangesAsync();
-                throw new DuplicateNameException("User with such nickname already exists");
-            }
-            existingUser = _db.Users.FirstOrDefault(u => u.PhoneNumber == user.PhoneNumber);
-            if (existingUser != null)
-            {
-                _db.SaveChangesAsync();
-                throw new DuplicateNameException("User with such phone number already exists");
-            }
-
+            var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+            Assert.Property(existingUser).IsNull("User with such email already exists");
+            existingUser = await _db.Users.FirstOrDefaultAsync(u => u.NickName == user.NickName);
+            Assert.Property(existingUser).IsNull("User with such nickname already exists");
+            existingUser = await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == user.PhoneNumber);
+            Assert.Property(existingUser).IsNull("User with such phone number already exists");
         }
     }
 }
