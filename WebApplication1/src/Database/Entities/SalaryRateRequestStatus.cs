@@ -2,8 +2,8 @@ namespace WebApplication1.Database.Entities
 {
     public enum SalaryRateRequestStatus
     {
-        Declined = 0,
-        Fulfilled = 1,
-        Pending = 2
+        Declined = 1,
+        Fulfilled = 2,
+        Pending = 3
     }
 }
