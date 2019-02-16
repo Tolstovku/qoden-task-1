@@ -1,18 +1,14 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Qoden.Validation;
-using Qoden.Validation.AspNetCore;
-using WebApplication1.Database.Entities.Requests;
-using WebApplication1.src.Database;
+using WebApplication1.Database;
+using WebApplication1.Requests;
 
-namespace WebApplication1.Database.Entities.Services
+namespace WebApplication1.Services
 {
     public interface ILoginService
     {

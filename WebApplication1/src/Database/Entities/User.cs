@@ -40,12 +40,12 @@ namespace WebApplication1.Database.Entities
         
         public void Validate(IValidator validator)
         {
-            validator.CheckValue(Password, "Password").NotNull();
+            validator.CheckValue(Password, "Password").MinLength(9).MaxLength(20).IsPassword();
             validator.CheckValue(FirstName, "FirstName").NotNull();
             validator.CheckValue(Lastname, "Lastname").NotNull();
             validator.CheckValue(Patronymic, "Patronymic").NotNull();
-            validator.CheckValue(NickName, "NickName").NotNull();
-            validator.CheckValue(Email, "Email").NotNull();
+            validator.CheckValue(NickName, "NickName").NotNull().MaxLength(15);
+            validator.CheckValue(Email, "Email").NotNull().IsEmail();
             validator.CheckValue(DepartmentId, "Department Id").NotNull();
             validator.CheckValue(UserRoleId, "UserRole Id").NotNull();
             validator.Throw();

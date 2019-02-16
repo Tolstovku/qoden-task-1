@@ -1,6 +1,6 @@
 using Qoden.Validation;
 
-namespace WebApplication1.Database.Entities
+namespace WebApplication1.Validation
 {
     public interface IValidate
     {

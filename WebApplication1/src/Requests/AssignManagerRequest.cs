@@ -1,6 +1,7 @@
 using Qoden.Validation;
+using WebApplication1.Validation;
 
-namespace WebApplication1.Database.Entities.Requests
+namespace WebApplication1.Requests
 {
     public class AssignManagerRequest : IValidate
     {

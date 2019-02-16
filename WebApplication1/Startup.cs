@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
-using Lesson1.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Qoden.Validation.AspNetCore;
+using WebApplication1.Configuration;
 using WebApplication1.Database.Entities;
-using WebApplication1.Database.Entities.Services;
+using WebApplication1.Services;
 
 namespace WebApplication1
 {

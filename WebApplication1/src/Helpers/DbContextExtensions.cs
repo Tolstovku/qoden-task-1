@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
-namespace Lesson1.Helpers
+namespace WebApplication1.Helpers
 {
     public static class DbContextExtensions
     {

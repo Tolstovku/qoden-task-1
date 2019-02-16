@@ -1,9 +1,7 @@
-using System;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
+using WebApplication1.Database.Entities;
 
-namespace WebApplication1.Database.Entities
+namespace WebApplication1
 {
     public static class PasswordGenerator
     {

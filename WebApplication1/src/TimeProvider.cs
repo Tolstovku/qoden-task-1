@@ -1,6 +1,6 @@
 using System;
 
-namespace WebApplication1.Database.Entities
+namespace WebApplication1
 {
     public class TimeProvider
     {

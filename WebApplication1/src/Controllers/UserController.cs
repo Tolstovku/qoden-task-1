@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication1.Database.Entities.Requests;
-using WebApplication1.Database.Entities.Services;
+using WebApplication1.Database.Entities;
+using WebApplication1.Requests;
+using WebApplication1.Responses;
+using WebApplication1.Services;
 
-namespace WebApplication1.Database.Entities.Controllers
+namespace WebApplication1.Controllers
 {
     [Route("/api/v1/user")]
     [Authorize]

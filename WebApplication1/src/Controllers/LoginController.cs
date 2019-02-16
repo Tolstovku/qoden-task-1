@@ -1,13 +1,11 @@
-using System.Security.Authentication;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity.UI.V3.Pages.Internal;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication1.Database.Entities.Requests;
-using WebApplication1.Database.Entities.Services;
+using WebApplication1.Requests;
+using WebApplication1.Services;
 
-namespace WebApplication1.Database.Entities.Controllers
+namespace WebApplication1.Controllers
 {
     [Route("/api/v1/")]
     public class LoginController : Controller

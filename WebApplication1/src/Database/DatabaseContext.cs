@@ -1,8 +1,8 @@
-using Lesson1.Helpers;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Database.Entities;
+using WebApplication1.Helpers;
 
-namespace WebApplication1.src.Database
+namespace WebApplication1.Database
 {
     public class DatabaseContext : DbContext
     {

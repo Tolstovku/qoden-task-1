@@ -1,7 +1,8 @@
-using System.Threading.Tasks;
 using Qoden.Validation;
+using WebApplication1.Database.Entities;
+using WebApplication1.Validation;
 
-namespace WebApplication1.Database.Entities.Requests
+namespace WebApplication1.Requests
 {
     public class AnswerSalaryRateRequestRequest : IValidate
     {

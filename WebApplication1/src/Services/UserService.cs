@@ -1,14 +1,13 @@
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Lesson1.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Qoden.Validation;
-using Qoden.Validation.AspNetCore;
-using WebApplication1.Database.Entities.Requests;
-using WebApplication1.src.Database;
+using WebApplication1.Database;
+using WebApplication1.Database.Entities;
+using WebApplication1.Requests;
+using WebApplication1.Responses;
 
-namespace WebApplication1.Database.Entities.Services
+namespace WebApplication1.Services
 {
     public interface IUserService
     {
@@ -34,7 +33,7 @@ namespace WebApplication1.Database.Entities.Services
         public async Task CreateUser(User user)
         {
             user.Validate(new Validator());
-            CheckUsersUniqueFields(user);
+            await CheckUsersUniqueFields(user);
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
         }
@@ -66,7 +65,7 @@ namespace WebApplication1.Database.Entities.Services
         {
             Assert.Property(user).NotNull(UserNotFoundMsg);
             user.Validate(new Validator());
-            CheckUsersUniqueFields(user);
+            await CheckUsersUniqueFields(user);
             _db.Users.Update(user);
             await _db.SaveChangesAsync();
         }

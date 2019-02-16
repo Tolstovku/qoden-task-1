@@ -2,7 +2,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApplication1.Database.Entities.Controllers
+namespace WebApplication1.Controllers
 {
     public static class ControllerExtension
     {

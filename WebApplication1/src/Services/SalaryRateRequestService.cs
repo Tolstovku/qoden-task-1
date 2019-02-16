@@ -3,10 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Qoden.Validation;
-using WebApplication1.Database.Entities.Requests;
-using WebApplication1.src.Database;
+using WebApplication1.Database;
+using WebApplication1.Database.Entities;
+using WebApplication1.Requests;
+using WebApplication1.Responses;
 
-namespace WebApplication1.Database.Entities.Services
+namespace WebApplication1.Services
 {
     public interface ISalaryRateRequestService
     {

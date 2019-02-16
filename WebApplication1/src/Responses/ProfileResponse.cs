@@ -1,6 +1,6 @@
-using System;
+using WebApplication1.Database.Entities;
 
-namespace WebApplication1.Database.Entities.Requests
+namespace WebApplication1.Responses
 {
     public class ProfileResponse
     {
