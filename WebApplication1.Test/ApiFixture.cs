@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore;
@@ -13,7 +12,7 @@ using WebApplication1;
 using WebApplication1.Requests;
 using Xunit;
 
-namespace Lesson6.Test
+namespace Tests
 {
     public class ApiFixture : IAsyncLifetime, IDisposable
     {

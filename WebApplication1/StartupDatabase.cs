@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using WebApplication1.src.Database;
+using WebApplication1.Database;
 
 namespace WebApplication1
 {

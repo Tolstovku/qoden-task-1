@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Transactions;
 using FluentAssertions;
-using Lesson6.Test;
 using WebApplication1.Requests;
 using Xunit;
 using Xunit.Abstractions;
