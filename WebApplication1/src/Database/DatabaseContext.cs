@@ -39,13 +39,18 @@ namespace WebApplication1.Database
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
-                    Id = 123, NickName = "Nimatora", Password = pass1, FirstName = "Vlad", Lastname = "Nimatora",
+                    Id = 123, NickName = "Admin", Password = pass1, FirstName = "Vlad", Lastname = "Nimatora",
                     Email = "tatata@ayndex.ru",  UserRoleId= -1, DepartmentId = -1
                 },
                 new User
                 {
-                    Id = 124, NickName = "Tolstovku", Password = pass2, FirstName = "Dan", Lastname = "Tolstovku",
+                    Id = 124, NickName = "User", Password = pass2, FirstName = "Dan", Lastname = "Tolstovku",
                     Email = "shitmail@ayndex.ru", UserRoleId = -2, DepartmentId = -2
+                },
+                new User
+                {
+                    Id = 125, NickName = "Manager", Password = pass1, FirstName = "Someone", Lastname = "Something",
+                    Email = "managerEmail@ayndex.ru",  UserRoleId= -3, DepartmentId = -1
                 });
             modelBuilder.Entity<Role>().HasData(
                 new Role
@@ -53,7 +58,8 @@ namespace WebApplication1.Database
                 new Role{Id = 3, Name = "admin"});
             modelBuilder.Entity<UserRole>().HasData(
                 new UserRole {Id = -1, UserId = 123, RoleId = 3},
-                new UserRole {Id = -2, UserId = 124, RoleId = 1}
+                new UserRole {Id = -2, UserId = 124, RoleId = 1},
+                new UserRole {Id = -3, UserId = 125, RoleId = 2}
             );
 
 
