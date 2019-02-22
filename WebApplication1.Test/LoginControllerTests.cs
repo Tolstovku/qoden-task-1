@@ -6,6 +6,9 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Transactions;
 using FluentAssertions;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
+using WebApplication1.Database;
 using WebApplication1.Requests;
 using Xunit;
 using Xunit.Abstractions;
@@ -15,17 +18,16 @@ namespace Tests
     public class LoginControllerTests : IClassFixture<ApiFixture>
     {
         private ApiFixture Api { get; set; }
-        private readonly ITestOutputHelper _testOutputHelper;
 
-        public LoginControllerTests(ApiFixture api, ITestOutputHelper testOutputHelper)
+        public LoginControllerTests(ApiFixture api)
         {
             Api = api;
-            _testOutputHelper = testOutputHelper;
         }
 
         [Fact]
         public async Task UserCanLogin()
         {
+            Api.Db.Users.FirstOrDefault(u => true);
             var request = new LoginRequest
             {
                 NicknameOrEmail = "User",
@@ -33,29 +35,20 @@ namespace Tests
             };
             var response = await Api.RegularUser.PostAsJsonAsync("api/v1/login", request);
 
+            var dbOption = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseNpgsql("User ID=postgres;Password=xna004;Host=localhost;Port=5432;Database=pip;");
+            var db = new DatabaseContext(dbOption.Options);
+            var users = db.Users.All(u => true);
+
+
             response.StatusCode.Should().BeEquivalentTo(200);
         }
-        
+
         [Fact]
         public async Task UserCanLogout()
         {
             var response = await Api.RegularUser.PostAsync("api/v1/logout", null);
             response.StatusCode.Should().BeEquivalentTo(200);
-        }
-
-        [Fact]
-        public async Task UserCanCreateSalaryRateRequest()
-        {
-            var srrRequest = new UserCreateSalaryRateRequestRequest
-            {
-                SuggestedRate = 123456,
-                Reason = "Want money"
-            };
-            using (var ts = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                var response = await Api.RegularUser.PostAsJsonAsync("api/v1/user/requests", srrRequest);
-                response.StatusCode.Should().BeEquivalentTo(200);
-            }
         }
 
         [Theory]

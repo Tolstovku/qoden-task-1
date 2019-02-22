@@ -8,7 +8,9 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using WebApplication1;
+using WebApplication1.Database;
 using WebApplication1.Requests;
 using Xunit;
 
@@ -20,6 +22,7 @@ namespace Tests
         public HttpClient RegularUser { get; set; }
         public HttpClient ManagerUser { get; set; }
         public HttpClient AdminUser { get; set; }
+        public DatabaseContext Db => Server.Host.Services.GetService<DatabaseContext>();
 
         public  ApiFixture()
         {
@@ -44,7 +47,7 @@ namespace Tests
                 NicknameOrEmail = nicknameOrEmail,
                 Password = password
             };
-            
+
             var response = await client.PostAsJsonAsync("api/v1/login", request);
             response.StatusCode.Should().Be(200);
             var cookie = response.Headers.FirstOrDefault(h => h.Key.Equals("Set-Cookie")).Value;
@@ -70,7 +73,7 @@ namespace Tests
             AdminUser.Dispose();
             Server.Dispose();
         }
-        
+
         private static IWebHostBuilder SetupWebHost()
         {
             var projectDir = System.IO.Directory.GetCurrentDirectory();
