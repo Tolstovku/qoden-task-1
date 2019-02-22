@@ -43,10 +43,10 @@ namespace WebApplication1.Services
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == req.UserId);
             var manager = await _db.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
                 .FirstOrDefaultAsync(u => u.Id == req.ManagerId);
-            Assert.Property(user).NotNull(UserNotFoundMsg);
-            Assert.Property(manager).NotNull("Manager not found");
+            Check.Value(user).NotNull(UserNotFoundMsg);
+            Check.Value(manager).NotNull("Manager not found");
             var managerRole = manager.UserRoles.FirstOrDefault(ur => ur.Role.Name == "Manager");
-            Assert.Property(managerRole).NotNull("User with specified ID is not a manager");
+            Check.Value(managerRole).NotNull("User with specified ID is not a manager");
             
             var userManager = new UserManager(req.UserId, req.ManagerId);
             _db.UserManagers.Add(userManager);
@@ -56,14 +56,14 @@ namespace WebApplication1.Services
         public async Task UnAssignManager(AssignManagerRequest req)
         {
             var userManager = new UserManager(req.UserId, req.ManagerId);
-            Assert.Property(userManager).NotNull("Specified relationship could not be found");
+            Check.Value(userManager).NotNull("Specified relationship could not be found");
             _db.UserManagers.Remove(userManager);
             await _db.SaveChangesAsync();
         }
         
         public async Task ModifyUser(User user)
         {
-            Assert.Property(user).NotNull(UserNotFoundMsg);
+            Check.Value(user).NotNull(UserNotFoundMsg);
             user.Validate(new Validator());
             await CheckUsersUniqueFields(user);
             _db.Users.Update(user);
@@ -80,18 +80,18 @@ namespace WebApplication1.Services
         public async Task<UserInfoResponse> GetUserInfo(int userId)
         {
             var user = await _db.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == userId);
-            Assert.Property(user).NotNull(UserNotFoundMsg);
+            Check.Value(user).NotNull(UserNotFoundMsg);
             return new UserInfoResponse(user);
         }
         
         private async Task CheckUsersUniqueFields(User user)
         {
             var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
-            Assert.Property(existingUser).IsNull("User with such email already exists");
+            Check.Value(existingUser).IsNull("User with such email already exists");
             existingUser = await _db.Users.FirstOrDefaultAsync(u => u.NickName == user.NickName);
-            Assert.Property(existingUser).IsNull("User with such nickname already exists");
+            Check.Value(existingUser).IsNull("User with such nickname already exists");
             existingUser = await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == user.PhoneNumber);
-            Assert.Property(existingUser).IsNull("User with such phone number already exists");
+            Check.Value(existingUser).IsNull("User with such phone number already exists");
         }
     }
 }

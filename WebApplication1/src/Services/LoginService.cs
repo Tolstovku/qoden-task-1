@@ -29,9 +29,9 @@ namespace WebApplication1.Services
         {
             var user = await _db.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
                 .FirstOrDefaultAsync(u => u.NickName == req.NicknameOrEmail || u.Email == req.NicknameOrEmail);
-            Assert.Property(user).NotNull(invalidLoginMsg);
+            Check.Value(user).NotNull(invalidLoginMsg);
             var verificationResult = PasswordGenerator.VerifyPassword(req.Password, user.Password);
-            Assert.Property(verificationResult, "Login")
+            Check.Value(verificationResult, "Login")
                 .EqualsTo(PasswordVerificationResult.Success, invalidLoginMsg);
             
             var claims = new List<Claim>
