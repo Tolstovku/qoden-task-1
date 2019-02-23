@@ -25,7 +25,7 @@ namespace WebApplication1.Requests
         public void Validate(IValidator validator)
         {
             validator.CheckValue(SenderId, "User Id").NotNull();
-            validator.CheckValue(SuggestedRate, "Suggested rate").NotNull();
+            validator.CheckValue(SuggestedRate, "Suggested rate").NotNull().Greater(0);
             validator.CheckValue(Reason, "Reason").NotNull();
             validator.Throw();
         }
