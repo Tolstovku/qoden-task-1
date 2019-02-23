@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
+using Qoden.Validation;
 using WebApplication1.Database.Entities;
 using WebApplication1.Requests;
 using WebApplication1.Responses;
@@ -83,16 +84,51 @@ namespace Tests
             }
         }
 
+        [Theory]
+        [InlineData("DefinitelyNotAnEmail" )]
+       
+        public async Task AdminCannotModifyUserWithInvalidEmail(string email)
+        {
+            var req = new ModifyUserRequest
+            {
+                 Email = email
+            };
+            const int id = 124;
+            var response = await Api.AdminUser.PutAsJsonAsync($"api/v1/user/{id}", req);
+            response.StatusCode.Should().Be(400);
+        }
+
+        [Theory]
+        [InlineData(-100)]
+        public async Task AdminCannotModifyNonExistingUser(int id)
+        {
+            var req = new ModifyUserRequest
+            {
+                FirstName = "Test"
+            };
+            var response = await Api.AdminUser.PutAsJsonAsync($"api/v1/user/{id}", req);
+            response.StatusCode.Should().Be(400);
+        }
+
         [Fact]
         public async Task AdminCanAssignManager()
         {
-            await CheckAssigning(true);
+            await CheckAssigning(true, 123, 125, false);
         }
 
         [Fact]
         public async Task AdminCanUnAssignManager()
         {
-            await CheckAssigning(false);
+            await CheckAssigning(false, 124, 125, false);
+        }
+
+        [Theory]
+        [InlineData(-100, 125)]
+        [InlineData(123, -100)]
+        public async Task AdminCannotAssignManagerDueToInvalidIds(int userId, int managerId)
+        {
+            await CheckAssigning(true, userId, managerId, true);
+
         }
         
         [Fact]
@@ -119,31 +155,39 @@ namespace Tests
             }
         }
 
-        private async Task CheckAssigning(bool doAssign)
+        private async Task CheckAssigning(bool doAssign, int userId, int managerId, bool shouldFail)
         {
             var endPath = doAssign ? "assign" : "unassign";
 
             var req = new AssignManagerRequest
             {
-                ManagerId = 125,
-                UserId = doAssign ? 123 : 124
+                ManagerId = managerId,
+                UserId = userId
             };
             using (new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 var amountOfUserManagerRelationshipsBefore = Api.Db.UserManagers.Count();
                 var response = await Api.AdminUser.PostAsJsonAsync($"api/v1/user/{endPath}", req);
-                _testOutputHelper.WriteLine(await response.Content.ReadAsStringAsync());
-
-                response.StatusCode.Should().BeEquivalentTo(200);
                 var amountOfUserManagerRelationshipsAfter = Api.Db.UserManagers.Count();
-                if (doAssign)
+
+                if (!shouldFail)
                 {
-                    amountOfUserManagerRelationshipsAfter.Should()
-                        .BeGreaterThan(amountOfUserManagerRelationshipsBefore);
+                    response.StatusCode.Should().BeEquivalentTo(200);
+                    if (doAssign)
+                    {
+                        amountOfUserManagerRelationshipsAfter.Should()
+                            .BeGreaterThan(amountOfUserManagerRelationshipsBefore);
+                    }
+                    else
+                    {
+                        amountOfUserManagerRelationshipsAfter.Should()
+                            .BeLessThan(amountOfUserManagerRelationshipsBefore);
+                    }
                 }
                 else
                 {
-                    amountOfUserManagerRelationshipsAfter.Should().BeLessThan(amountOfUserManagerRelationshipsBefore);
+                    response.StatusCode.Should().BeEquivalentTo(400);
+                    amountOfUserManagerRelationshipsBefore.Should().Be(amountOfUserManagerRelationshipsAfter);
                 }
             }
         }
