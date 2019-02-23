@@ -32,11 +32,11 @@ namespace WebApplication1.Controllers
             return await _userService.GetUserInfo(userId);
         }
 
-        [HttpPut("modify")]
+        [HttpPut("{userId}")]
         [Authorize(Roles = "manager, admin")]
-        public async Task ModifyUser([FromBody] User user)
+        public async Task ModifyUser(int userId, [FromBody] ModifyUserRequest req)
         {
-                await _userService.ModifyUser(user);
+                await _userService.ModifyUser(userId, req);
         }
         
         [HttpPost("assign")]
@@ -56,9 +56,9 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task CreateUser([FromBody] User user)
+        public async Task CreateUser([FromBody] CreateUserRequest req)
         {
-            await _userService.CreateUser(user);
+            await _userService.CreateUser(req);
         }
         
     }
