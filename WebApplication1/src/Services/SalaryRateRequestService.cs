@@ -52,7 +52,7 @@ namespace WebApplication1.Services
         {
             req.Validate(new Validator());
             var chain = await _db.SalaryRateRequests.FirstOrDefaultAsync(srr => srr.RequestChainId == req.RequestChainId);
-            Check.Value(chain).NotNull("Request chain with specified ID does not exist");
+            Check.Value(chain).IsNull("Request chain with specified ID does not exist");
             
             var salaryRateRequest = req.ConvertToSalaryRateRequest();
             var previousSRRInChain = await _db.SalaryRateRequests
