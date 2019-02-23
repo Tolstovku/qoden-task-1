@@ -11,10 +11,10 @@ namespace WebApplication1.Services
 {
     public interface IUserService
     {
-        Task CreateUser(User user);
+        Task CreateUser(CreateUserRequest req);
         Task AssignManager(AssignManagerRequest req);
         Task UnAssignManager(AssignManagerRequest req);
-        Task ModifyUser(User user);
+        Task ModifyUser(int userId, ModifyUserRequest req);
         Task<ProfileResponse> GetProfile(int userId);
         Task<UserInfoResponse> GetUserInfo(int userId);
     }
@@ -30,9 +30,9 @@ namespace WebApplication1.Services
             _db = db;
         }
         
-        public async Task CreateUser(User user)
+        public async Task CreateUser(CreateUserRequest req)
         {
-            user.Validate(new Validator());
+            var user = req.CreateUserFromRequest();
             await CheckUsersUniqueFields(user);
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
@@ -45,7 +45,7 @@ namespace WebApplication1.Services
                 .FirstOrDefaultAsync(u => u.Id == req.ManagerId);
             Check.Value(user).NotNull(UserNotFoundMsg);
             Check.Value(manager).NotNull("Manager not found");
-            var managerRole = manager.UserRoles.FirstOrDefault(ur => ur.Role.Name == "Manager");
+            var managerRole = manager.UserRoles.FirstOrDefault(ur => ur.Role.Name == "manager");
             Check.Value(managerRole).NotNull("User with specified ID is not a manager");
             
             var userManager = new UserManager(req.UserId, req.ManagerId);
@@ -61,10 +61,18 @@ namespace WebApplication1.Services
             await _db.SaveChangesAsync();
         }
         
-        public async Task ModifyUser(User user)
+        public async Task ModifyUser(int userId, ModifyUserRequest req)
         {
+            req.Validate(new Validator());
+            var user = await _db.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == userId);
             Check.Value(user).NotNull(UserNotFoundMsg);
-            user.Validate(new Validator());
+            if (req.DepartmentId != null)
+            {
+                var depWithSuchId = _db.Departments.SingleOrDefault(dep => dep.Id == req.DepartmentId);
+                Check.Value(user).NotNull("Department with specified ID could not be found");
+            }
+
+            user.ModifyUser(req);
             await CheckUsersUniqueFields(user);
             _db.Users.Update(user);
             await _db.SaveChangesAsync();
@@ -86,12 +94,16 @@ namespace WebApplication1.Services
         
         private async Task CheckUsersUniqueFields(User user)
         {
-            var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+            var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Id != user.Id);
             Check.Value(existingUser).IsNull("User with such email already exists");
-            existingUser = await _db.Users.FirstOrDefaultAsync(u => u.NickName == user.NickName);
+            existingUser = await _db.Users.FirstOrDefaultAsync(u => u.NickName == user.NickName && u.Id != user.Id);
             Check.Value(existingUser).IsNull("User with such nickname already exists");
-            existingUser = await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == user.PhoneNumber);
-            Check.Value(existingUser).IsNull("User with such phone number already exists");
+            if (user.PhoneNumber != null)
+            {
+                existingUser =
+                    await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == user.PhoneNumber && u.Id != user.Id);
+                Check.Value(existingUser).IsNull("User with such phone number already exists");
+            }
         }
     }
 }

@@ -61,6 +61,11 @@ namespace WebApplication1.Database
                 new UserRole {Id = -2, UserId = 124, RoleId = 1},
                 new UserRole {Id = -3, UserId = 125, RoleId = 2}
             );
+            modelBuilder.Entity<SalaryRateRequest>().HasData(
+                new SalaryRateRequest {Id = -1, RequestChainId = -1, SuggestedRate = 1337, Reason = "Want money", SenderId = 124},
+                new SalaryRateRequest {Id = -2, RequestChainId = -2, SuggestedRate = 1338, Reason = "Want more money", SenderId = 124}
+            );
+            modelBuilder.Entity<UserManager>().HasData(new UserManager(124, 125));
 
 
         }

@@ -16,6 +16,6 @@ namespace WebApplication1.Database.Entities
             UserId = userId;
             ManagerId = managerId;
         }
-            
+
     }
 }

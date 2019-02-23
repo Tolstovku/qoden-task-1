@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Qoden.Validation;
+using WebApplication1.Requests;
 
 namespace WebApplication1.Database.Entities
 {
@@ -21,9 +22,10 @@ namespace WebApplication1.Database.Entities
         public string NickName { get; set; }
         [Required] 
         public string Email { get; set; }
-        public int? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public DateTime InvitedAt { get; set; }
         public string Description { get; set; }
+        [Required] 
         public int DepartmentId { get; set; }
         [Required] 
         public int UserRoleId { get; set; }
@@ -38,17 +40,17 @@ namespace WebApplication1.Database.Entities
         [InverseProperty("Manager")]
         public ICollection<UserManager> ManagersUsers { get; set; }
         
-        public void Validate(IValidator validator)
+
+        public void ModifyUser(ModifyUserRequest req)
         {
-            validator.CheckValue(Password, "Password").MinLength(9).MaxLength(20).IsPassword();
-            validator.CheckValue(FirstName, "FirstName").NotNull();
-            validator.CheckValue(Lastname, "Lastname").NotNull();
-            validator.CheckValue(Patronymic, "Patronymic").NotNull();
-            validator.CheckValue(NickName, "NickName").NotNull().MaxLength(15);
-            validator.CheckValue(Email, "Email").NotNull().IsEmail();
-            validator.CheckValue(DepartmentId, "Department Id").NotNull();
-            validator.CheckValue(UserRoleId, "UserRole Id").NotNull();
-            validator.Throw();
+            FirstName = req.FirstName ?? FirstName;
+            Lastname = req.Lastname ?? Lastname;
+            Patronymic = req.Patronymic ?? Patronymic;
+            NickName = req.NickName ?? NickName;
+            Email = req.Email ?? Email;
+            PhoneNumber = req.PhoneNumber ?? PhoneNumber;
+            Description = req.Description ?? Description;
+            DepartmentId = req.DepartmentId ?? DepartmentId;
         }
     }
 }
