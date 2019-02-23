@@ -18,10 +18,12 @@ namespace Tests
     public class LoginControllerTests : IClassFixture<ApiFixture>
     {
         private ApiFixture Api { get; set; }
+        private ITestOutputHelper Output { get; set; }
 
-        public LoginControllerTests(ApiFixture api)
+        public LoginControllerTests(ApiFixture api, ITestOutputHelper output)
         {
             Api = api;
+            Output = output;
         }
 
         [Fact]
@@ -34,13 +36,6 @@ namespace Tests
                 Password = "123"
             };
             var response = await Api.RegularUser.PostAsJsonAsync("api/v1/login", request);
-
-            var dbOption = new DbContextOptionsBuilder<DatabaseContext>()
-                .UseNpgsql("User ID=postgres;Password=xna004;Host=localhost;Port=5432;Database=pip;");
-            var db = new DatabaseContext(dbOption.Options);
-            var users = db.Users.All(u => true);
-
-
             response.StatusCode.Should().BeEquivalentTo(200);
         }
 
