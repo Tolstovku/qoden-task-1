@@ -14,6 +14,8 @@ namespace WebApplication1.Responses
             Description = user.Description;
             DepartmentName = user.Department.Name;
         }
+        
+        public ProfileResponse(){}
 
         public string FirstName { get; set; }
         public string Lastname { get; set; }

@@ -23,5 +23,7 @@ namespace WebApplication1.Responses
             ReviewerComment = srr.ReviewerComment;
             Reason = srr.Reason;
         }
+        
+        public UserSalaryRateRequestsResponse(){}
     }
 }

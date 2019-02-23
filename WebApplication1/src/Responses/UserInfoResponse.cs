@@ -17,13 +17,15 @@ namespace WebApplication1.Responses
             Description = user.Description;
             DepartmentName = user.Department.Name;
         }
+        
+        public UserInfoResponse(){}
 
         public string FirstName { get; set; }
         public string Lastname { get; set; }
         public string Patronymic { get; set; }
         public string NickName { get; set; }
         public string Email { get; set; }
-        public int? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public DateTime InvitedAt { get; set; }
         public string Description { get; set; }
         public string DepartmentName { get; set; }
