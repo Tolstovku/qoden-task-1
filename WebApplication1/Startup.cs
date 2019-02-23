@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Buffers;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Qoden.Validation.AspNetCore;
 using WebApplication1.Configuration;
 using WebApplication1.Database.Entities;
@@ -26,7 +29,15 @@ namespace WebApplication1
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ISalaryRateRequestService, SalaryRateRequestService>();
             services.Configure<Config>(Configuration.GetSection("Database"));
-            services.AddMvc(o => o.Filters.Add<ApiExceptionFilterAttribute>());
+            services.AddMvc(o =>
+            {
+                o.Filters.Add<ApiExceptionFilterAttribute>();
+                o.OutputFormatters.Clear();
+                o.OutputFormatters.Add(new JsonOutputFormatter(new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }, ArrayPool<char>.Shared));
+            });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {

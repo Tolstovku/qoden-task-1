@@ -14,7 +14,7 @@ namespace WebApplication1
             services.AddDbContext<DatabaseContext>((provider, options) =>
             {
                 options.UseNpgsql(Configuration["Database:ConnectionString"]);
-            });
+            }, ServiceLifetime.Singleton);
         }
     }
 }
