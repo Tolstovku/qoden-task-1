@@ -1,8 +1,10 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,7 @@ using Newtonsoft.Json;
 using Qoden.Validation.AspNetCore;
 using WebApplication1.Configuration;
 using WebApplication1.Database.Entities;
+using WebApplication1.Hubs;
 using WebApplication1.Services;
 
 namespace WebApplication1
@@ -39,16 +42,15 @@ namespace WebApplication1
                 }, ArrayPool<char>.Shared));
             });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
+                .AddCookie(o =>
                 {
-                    options.LoginPath = "/api/v1/login";
-                    options.LogoutPath = "/api/v1/logout";
-                    options.Events.OnRedirectToLogin = ctx =>
+                    o.Events.OnRedirectToLogin = ctx =>
                     {
-                        ctx.Response.StatusCode = 403;
+                        ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         return Task.CompletedTask;
                     };
                 });
+            services.AddSignalR(options => options.ClientTimeoutInterval = TimeSpan.FromHours(1));
             ConfigureDatabase(services);
         }
 
@@ -59,6 +61,9 @@ namespace WebApplication1
             app.UseAuthentication();
 
             app.UseMvc();
+
+            app.UseCors(x => x.WithOrigins("http://localhost:8000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+            app.UseSignalR(routes => routes.MapHub<ChatHub>("/ws/users"));
         }
     }
 }
