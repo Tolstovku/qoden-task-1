@@ -63,7 +63,7 @@ namespace WebApplication1
             app.UseMvc();
 
             app.UseCors(x => x.WithOrigins("http://localhost:8000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
-            app.UseSignalR(routes => routes.MapHub<ChatHub>("/ws/users"));
+            app.UseSignalR(routes => routes.MapHub<ChatHub>("/ws/chat"));
         }
     }
 }
