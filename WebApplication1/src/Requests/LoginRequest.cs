@@ -1,5 +1,4 @@
 using Qoden.Validation;
-using WebApplication1.Validation;
 
 namespace WebApplication1.Requests
 {
@@ -7,7 +6,7 @@ namespace WebApplication1.Requests
     {
         public string NicknameOrEmail { get; set; }
         public string Password { get; set; }
-        
+
         public void Validate(IValidator validator)
         {
             validator.CheckValue(NicknameOrEmail, "Nickname or Email").NotNull();
@@ -15,6 +14,6 @@ namespace WebApplication1.Requests
             validator.Throw();
         }
     }
-    
-    
+
+
 }

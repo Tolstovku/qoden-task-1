@@ -1,6 +1,5 @@
 using Qoden.Validation;
 using WebApplication1.Database.Entities;
-using WebApplication1.Validation;
 
 namespace WebApplication1.Requests
 {
@@ -10,7 +9,7 @@ namespace WebApplication1.Requests
         public int SuggestedRate { get; set; }
         public string Reason { get; set; }
 
-        public SalaryRateRequest ConvertToSalaryRateRequest() 
+        public SalaryRateRequest ConvertToSalaryRateRequest()
         {
             return new SalaryRateRequest
             {
@@ -21,7 +20,7 @@ namespace WebApplication1.Requests
                 CreatedAt = TimeProvider.GetDateTime()
             };
         }
-        
+
         public void Validate(IValidator validator)
         {
             validator.CheckValue(SenderId, "User Id").NotNull();

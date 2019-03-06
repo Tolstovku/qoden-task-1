@@ -33,7 +33,7 @@ namespace WebApplication1.Hubs
             var hasJoinedMsg = $"{username} has joined the room.\n";
             var connId = Context.ConnectionId;
 
-            var roomsOfUser = UserInRooms.GetValue(username);
+            var roomsOfUser = UserInRooms.GetValueOrDefault(username);
             if (roomsOfUser.Count == 10)
             {
                 await Clients.Caller.SendAsync("roomLimitExceeded");
@@ -52,7 +52,7 @@ namespace WebApplication1.Hubs
             var hasLeftMsg = $"{username} has left the room.\n";
             var connId = Context.ConnectionId;
 
-            UserInRooms.GetValue(username).Remove(roomId);
+            UserInRooms.GetValueOrDefault(username).Remove(roomId);
             await Groups.RemoveFromGroupAsync(connId, roomId);
             await Clients.Group(roomId).SendAsync("sendMessage", hasLeftMsg);
         }
@@ -64,7 +64,7 @@ namespace WebApplication1.Hubs
             var connId = Context.ConnectionId;
 
             await Clients.Group(roomId).SendAsync("sendMessage", msgWithAuthor);
-            MessagesInRoom.GetValue(roomId).Add(msg);
+            MessagesInRoom.GetValueOrDefault(roomId).Add(msg);
         }
 
         private async Task SendRoomMessagesToCaller(string roomId)

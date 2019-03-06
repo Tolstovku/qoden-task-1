@@ -1,5 +1,4 @@
 using Qoden.Validation;
-using WebApplication1.Validation;
 
 namespace WebApplication1.Requests
 {
@@ -7,8 +6,8 @@ namespace WebApplication1.Requests
     {
         public int UserId { get; set; }
         public int ManagerId { get; set; }
-        
-        
+
+
         public void Validate(IValidator validator)
         {
             validator.CheckValue(UserId, "User Id").NotNull();
