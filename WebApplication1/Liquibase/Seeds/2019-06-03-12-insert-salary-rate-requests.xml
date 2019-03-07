@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="2019-06-03-12-insert-salary_rate_requests" author="tolstovku" context="dev, test">
+        <insert tableName="salary_rate_requests">
+            <column name="request_chain_id" value="0"/>
+            <column name="suggested_rate" value="1337"/>
+            <column name="reason" value="Want money"/>
+            <column name="sender_id" value="2"/>
+            <column name="status" value="3"/>
+            <column name="created_at" value="01.01.2019"/>
+        </insert>
+        <insert tableName="salary_rate_requests">
+            <column name="request_chain_id" value="1"/>
+            <column name="suggested_rate" value="1427"/>
+            <column name="reason" value="I also want money"/>
+            <column name="sender_id" value="3"/>
+            <column name="status" value="3"/>
+            <column name="created_at" value="01.01.2019"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

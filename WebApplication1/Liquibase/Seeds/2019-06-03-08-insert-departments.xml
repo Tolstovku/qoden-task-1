@@ -3,8 +3,16 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <includeAll path="./" relativeToChangelogFile="true"/>
+    <changeSet id="2019-06-03-08-insert-departments" author="tolstovku" context="dev, test">
+        <insert tableName="departments">
+            <column name="name" value="Frontend"/>
+        </insert>
+        <insert tableName="departments">
+            <column name="name" value="Backend"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

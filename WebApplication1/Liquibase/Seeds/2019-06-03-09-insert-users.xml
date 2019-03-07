@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="2019-06-03-09-insert-users" author="tolstovku" context="dev, test">
+        <insert tableName="users">
+            <column name="nickname" value="Admin"/>
+            <column name="password" value="AQAAAAEAACcQAAAAEDIQZRJJvqkOh8aXCFtup1SEObbC6295iV8fjic0Dxql73jLe0PsXSoHMX5As75p5Q=="/>
+            <column name="first_name" value="Vlad"/>
+            <column name="last_name" value="nimatora"/>
+            <column name="email" value="tatata@yandex.ru"/>
+            <column name="department_id" value="2"/>
+            <column name="invited_at" value="01.01.2019"/>
+        </insert>
+        <insert tableName="users">
+            <column name="nickname" value="User"/>
+            <column name="password" value="AQAAAAEAACcQAAAAEKpYbzc4YZbIZIJYd/F1XI8qhGjStan+x146+FEphPW5vIjwM1vBuPSc27WuUczrPw=="/>
+            <column name="first_name" value="Dan"/>
+            <column name="last_name" value="Tolstovku"/>
+            <column name="email" value="shitmail@yandex.ru"/>
+            <column name="department_id" value="1"/>
+            <column name="invited_at" value="01.01.2019"/>
+        </insert>
+        <insert tableName="users">
+            <column name="nickname" value="Manager"/>
+            <column name="password" value="AQAAAAEAACcQAAAAEO5TgbvMXgk7K9i3kfaXaTF6556z6S+WLzUyx3PB+h/4v333ROtm5n/Lbu6GExNwAw=="/>
+            <column name="first_name" value="Someone"/>
+            <column name="last_name" value="Something"/>
+            <column name="email" value="managerEmail@yandex.ru"/>
+            <column name="department_id" value="2"/>
+            <column name="invited_at" value="01.01.2019"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
+
