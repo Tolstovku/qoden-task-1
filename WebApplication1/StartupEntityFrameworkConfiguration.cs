@@ -7,7 +7,7 @@ namespace WebApplication1
 {
     public partial class Startup
     {
-        public void ConfigureDatabase(IServiceCollection services)
+        public void ConfigureEntityFramework(IServiceCollection services)
         {
             services.AddEntityFrameworkNpgsql();
             Debug.WriteLine(Configuration["ConnectionString"]);

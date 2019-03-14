@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Qoden.Validation.AspNetCore;
 using WebApplication1.Configuration;
+using WebApplication1.Database;
 using WebApplication1.Database.Entities;
 using WebApplication1.Hubs;
 using WebApplication1.Services;
@@ -31,6 +32,7 @@ namespace WebApplication1
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ISalaryRateRequestService, SalaryRateRequestService>();
+            services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
             services.Configure<Config>(Configuration.GetSection("Database"));
             services.AddMvc(o =>
             {
@@ -51,7 +53,6 @@ namespace WebApplication1
                     };
                 });
             services.AddSignalR(options => options.ClientTimeoutInterval = TimeSpan.FromHours(1));
-            ConfigureDatabase(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
