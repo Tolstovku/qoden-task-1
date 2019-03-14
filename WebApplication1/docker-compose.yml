@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: postgres:11
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: mydb
+      POSTGRES_PASSWORD: mydb
+  migrations:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: migrations.Dockerfile
+    image: migrations
+    environment:
+      DB_HOST: db
+      DB_TYPE: jdbc:postgresql
+      DB_PORT: 5432
+      DB_USER: mydb
+      DB_PASSWORD: mydb
+      DB_NAME: mydb
+      DB_DRIVER: org.postgresql.Driver
+      LOGLEVEL: debug
+      CONTEXTS: dev
+    entrypoint: ["./wait-for-it.sh", "-s", "-t", "15", "db:5432","--", "./run-migrations.sh"]
+

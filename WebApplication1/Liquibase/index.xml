@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <include file="Migrations/2019-06-03-01-create-departments-table.xml" relativeToChangelogFile="true"/>
+    <include file="Migrations/2019-06-03-02-create-roles-table.xml" relativeToChangelogFile="true"/>
+    <include file="Migrations/2019-06-03-03-create-users-table.xml" relativeToChangelogFile="true"/>
+    <include file="Migrations/2019-06-03-04-create-user-roles-table.xml" relativeToChangelogFile="true"/>
+    <include file="Migrations/2019-06-03-05-create-user-managers-table.xml" relativeToChangelogFile="true"/>
+    <include file="Migrations/2019-06-03-06-create-salary-rates-table.xml" relativeToChangelogFile="true"/>
+    <include file="Migrations/2019-06-03-07-create-salary-rate-requests-table.xml" relativeToChangelogFile="true"/>
+
+    <include file="Seeds/2019-06-03-08-insert-departments.xml" relativeToChangelogFile="true"/>
+    <include file="Seeds/2019-06-03-09-insert-users.xml" relativeToChangelogFile="true"/>
+    <include file="Seeds/2019-06-03-10-insert-roles.xml" relativeToChangelogFile="true"/>
+    <include file="Seeds/2019-06-03-11-insert-user-roles.xml" relativeToChangelogFile="true"/>
+    <include file="Seeds/2019-06-03-12-insert-salary-rate-requests.xml" relativeToChangelogFile="true"/>
+    <include file="Seeds/2019-06-03-13-insert-user-managers.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

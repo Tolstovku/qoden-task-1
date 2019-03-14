@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="2019-06-03-03-create-users-table" author="tolstovku" context="dev, prod, test">
+
+        <createTable tableName="users">
+
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="first_name" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_name" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="patronymic" type="text">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="nickname" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="email" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="password" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="phone_number" type="text">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="invited_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="text">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="department_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <addForeignKeyConstraint
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                baseTableName="users"
+                baseColumnNames="department_id"
+                constraintName="fk_users_department__departments"
+                referencedColumnNames="id"
+                referencedTableName="departments"/>
+    </changeSet>
+</databaseChangeLog>

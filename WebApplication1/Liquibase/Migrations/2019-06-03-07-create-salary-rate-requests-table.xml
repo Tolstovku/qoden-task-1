@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="2019-06-03-07-create-salary_rate_requests-table" author="tolstovku" context="dev, prod, test">
+
+        <createTable tableName="salary_rate_requests">
+
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="request_chain_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="suggested_rate" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reviewer_id" type="int">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="sender_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reviewer_comment" type="text">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="internal_comment" type="text">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="reason" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <addForeignKeyConstraint
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                baseTableName="salary_rate_requests"
+                baseColumnNames="sender_id"
+                constraintName="fk_salary_rate_requests_sender_id__users"
+                referencedTableName="users"
+                referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                baseTableName="salary_rate_requests"
+                baseColumnNames="reviewer_id"
+                constraintName="fk_salary_rate_requests_reviewer_id__users"
+                referencedTableName="users"
+                referencedColumnNames="id"/>
+
+    </changeSet>
+</databaseChangeLog>
+
