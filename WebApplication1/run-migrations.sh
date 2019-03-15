@@ -6,7 +6,7 @@ echo "user = $DB_USER"
 --password=$DB_PASSWORD \
 --url=$DB_TYPE://$DB_HOST:$DB_PORT/$DB_NAME \
 --driver=org.postgresql.Driver \
---logLevel=$LOGLEVE \
+--logLevel=$LOGLEVEL \
 --classpath=./postgresql-42.2.5.jar \
 --contexts=$CONTEXTS \
 update
