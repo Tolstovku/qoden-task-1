@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Qoden.Validation;
 using WebApplication1.Database;
 using WebApplication1.Database.Entities;
+using WebApplication1.Database.Repositories;
 using WebApplication1.Requests;
 using WebApplication1.Responses;
 
@@ -21,21 +22,18 @@ namespace WebApplication1.Services
 
     public class SalaryRateRequestService : ISalaryRateRequestService
     {
-        private readonly DatabaseContext _db;
-        private const string userNotFoundMsg = "User not found";
-            
-        public SalaryRateRequestService(DatabaseContext db)
+        private readonly IDbConnectionFactory _db;
+        private const string UserNotFoundMsg = "User not found";
+
+        public SalaryRateRequestService(IDbConnectionFactory db)
         {
             _db = db;
         }
 
         public async Task<List<UserSalaryRateRequestsResponse>> GetSalaryRateRequestsByUser(int userId)
         {
-            var user = await _db.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == userId);
-            
-            var salaryRateRequests =  await _db.SalaryRateRequests
-                .Where(srr => srr.SenderId == userId)
-                .ToListAsync();
+            var salaryRateRequests = await _db.GetSalaryRequestsByUserId(userId);
+
             var responseSRRsList = new List<UserSalaryRateRequestsResponse>();
             salaryRateRequests.ForEach(srr =>  responseSRRsList.Add(new UserSalaryRateRequestsResponse(srr)));
             return responseSRRsList;
@@ -43,44 +41,36 @@ namespace WebApplication1.Services
 
         public async Task<List<SalaryRateRequest>> GetSalaryRateRequestsByManager(int managerId)
         {
-            var myUsersIds = await _db.UserManagers.Where(um => um.ManagerId == managerId).Select(um => um.UserId).ToListAsync();
-            return await _db.SalaryRateRequests.Where(srr => myUsersIds.Contains(srr.SenderId)).ToListAsync();
+            var managersUsersIds = await _db.GetUserIdsByManagerId(managerId);
+            return await _db.GetSalaryRequestsByUserIds(managersUsersIds);
 
         }
 
         public async Task AnswerSalaryRateRequest(AnswerSalaryRateRequestRequest req)
         {
             req.Validate(new Validator());
-            var chain = await _db.SalaryRateRequests.FirstOrDefaultAsync(srr => srr.RequestChainId == req.RequestChainId);
-            Check.Value(chain).IsNull("Request chain with specified ID does not exist");
-            
+            var requestsInChain = await _db.GetSalaryRequestsByChainIdNewestFirst(req.RequestChainId);
+            Check.Value(requestsInChain.Count).NotEqualsTo(0, "Request chain with specified ID does not exist");
+
             var salaryRateRequest = req.ConvertToSalaryRateRequest();
-            var previousSRRInChain = await _db.SalaryRateRequests
-                .Include(srr => srr.Sender)
-                .Include(srr => srr.Reviewer)
-                .Where(srr => srr.RequestChainId == salaryRateRequest.RequestChainId)
-                .OrderByDescending(srr => srr.CreatedAt)
-                .FirstOrDefaultAsync();
+            var previousSRRInChain = requestsInChain.First();
             salaryRateRequest.SuggestedRate = previousSRRInChain.SuggestedRate;
             salaryRateRequest.SenderId = previousSRRInChain.SenderId;
             salaryRateRequest.Reason = previousSRRInChain.Reason;
             salaryRateRequest.SalaryRateRequestStatus = previousSRRInChain.SalaryRateRequestStatus;
-            _db.SalaryRateRequests.Add(salaryRateRequest);
-            await _db.SaveChangesAsync();
+            await _db.InsertSalaryRequest(salaryRateRequest);
         }
 
         public async Task<List<SalaryRateRequest>> GetAllSalaryRateRequests()
         {
-            return await _db.SalaryRateRequests
-                .ToListAsync();
+            return await _db.GetAllSalaryRequests();
         }
 
         public async Task CreateSalaryRateRequest(UserCreateSalaryRateRequestRequest req)
         {
             req.Validate(new Validator());
             var salaryRateRequest = req.ConvertToSalaryRateRequest();
-            _db.SalaryRateRequests.Add(salaryRateRequest);
-            await _db.SaveChangesAsync();
+            await _db.InsertSalaryRequest(salaryRateRequest);
         }
     }
 }

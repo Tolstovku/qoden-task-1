@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Qoden.Validation;
 using WebApplication1.Database;
 using WebApplication1.Database.Entities;
+using WebApplication1.Database.Repositories;
 using WebApplication1.Requests;
 using WebApplication1.Responses;
 
@@ -18,91 +19,93 @@ namespace WebApplication1.Services
         Task<ProfileResponse> GetProfile(int userId);
         Task<UserInfoResponse> GetUserInfo(int userId);
     }
-    
-    
+
+
     public class UserService : IUserService
     {
-        private readonly DatabaseContext _db;
+        private readonly IDbConnectionFactory _db;
         private const string UserNotFoundMsg = "User not found";
 
-        public UserService(DatabaseContext db)
+        public UserService(IDbConnectionFactory db)
         {
             _db = db;
         }
-        
+
         public async Task CreateUser(CreateUserRequest req)
         {
+
             var user = req.CreateUserFromRequest();
             await CheckUsersUniqueFields(user);
-            _db.Users.Add(user);
-            await _db.SaveChangesAsync();
+            await _db.InsertUser(user);
         }
 
         public async Task AssignManager(AssignManagerRequest req)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == req.UserId);
-            var manager = await _db.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
-                .FirstOrDefaultAsync(u => u.Id == req.ManagerId);
+            var user = await _db.GetUserById(req.UserId);
+            var manager = await _db.GetUserById(req.UserId);
+            var managerRoles = await _db.GetRolesByUserId(req.ManagerId);
+
             Check.Value(user).NotNull(UserNotFoundMsg);
             Check.Value(manager).NotNull("Manager not found");
-            var managerRole = manager.UserRoles.FirstOrDefault(ur => ur.Role.Name == "manager");
+            var managerRole = managerRoles.FirstOrDefault(r => r.Name == "manager");
             Check.Value(managerRole).NotNull("User with specified ID is not a manager");
-            
+
             var userManager = new UserManager(req.UserId, req.ManagerId);
-            _db.UserManagers.Add(userManager);
-            await _db.SaveChangesAsync();
+            await _db.InsertUserManager(userManager);
         }
-        
+
         public async Task UnAssignManager(AssignManagerRequest req)
         {
-            var userManager = new UserManager(req.UserId, req.ManagerId);
+            var userManager = await _db.GetUserManagerByIds(req.UserId, req.ManagerId);
             Check.Value(userManager).NotNull("Specified relationship could not be found");
-            _db.UserManagers.Remove(userManager);
-            await _db.SaveChangesAsync();
+            await _db.DeleteUserManager(userManager);
         }
-        
+
         public async Task ModifyUser(int userId, ModifyUserRequest req)
         {
             req.Validate(new Validator());
-            var user = await _db.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _db.GetUserByIdIncludeDepartment(userId);
             Check.Value(user).NotNull(UserNotFoundMsg);
             if (req.DepartmentId != null)
             {
-                var depWithSuchId = _db.Departments.SingleOrDefault(dep => dep.Id == req.DepartmentId);
+                var depWithSuchId = _db.GetDepartmentById(req.DepartmentId.Value);
                 Check.Value(user).NotNull("Department with specified ID could not be found");
             }
 
             user.ModifyUser(req);
             await CheckUsersUniqueFields(user);
-            _db.Users.Update(user);
-            await _db.SaveChangesAsync();
+            await _db.UpdateUser(user);
         }
-        
+
         public async Task<ProfileResponse> GetProfile(int userId)
         {
-            var user = await _db.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _db.GetUserByIdIncludeDepartment(userId);
+            Check.Value(user).NotNull(UserNotFoundMsg);
             return new ProfileResponse(user);
         }
-        
+
 
         public async Task<UserInfoResponse> GetUserInfo(int userId)
         {
-            var user = await _db.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _db.GetUserByIdIncludeDepartment(userId);
             Check.Value(user).NotNull(UserNotFoundMsg);
             return new UserInfoResponse(user);
         }
-        
+
         private async Task CheckUsersUniqueFields(User user)
         {
-            var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Id != user.Id);
-            Check.Value(existingUser).IsNull("User with such email already exists");
-            existingUser = await _db.Users.FirstOrDefaultAsync(u => u.NickName == user.NickName && u.Id != user.Id);
-            Check.Value(existingUser).IsNull("User with such nickname already exists");
+            var existingUser = await _db.GetUserByEmail(user.Email);
+            if (existingUser != null)
+                Check.Value(existingUser.Id).EqualsTo(user.Id, "User with such email already exists");
+            existingUser = await _db.GetUserByNickname(user.NickName);
+            if (existingUser != null)
+                Check.Value(existingUser.Id).EqualsTo(user.Id, "User with such nickname already exists");
             if (user.PhoneNumber != null)
             {
                 existingUser =
-                    await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == user.PhoneNumber && u.Id != user.Id);
-                Check.Value(existingUser).IsNull("User with such phone number already exists");
+                    await _db.GetUserByPhoneNumber(user.PhoneNumber);
+                if (existingUser != null)
+                    Check.Value(existingUser.Id).EqualsTo(user.Id, "User with such phone number already exists");
             }
         }
     }
