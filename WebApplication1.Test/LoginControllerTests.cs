@@ -29,7 +29,6 @@ namespace Tests
         [Fact]
         public async Task UserCanLogin()
         {
-            Api.Db.Users.FirstOrDefault(u => true);
             var request = new LoginRequest
             {
                 NicknameOrEmail = "User",

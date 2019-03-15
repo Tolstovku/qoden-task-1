@@ -62,7 +62,7 @@ namespace Tests
             var requests = JsonConvert.DeserializeObject<IEnumerable<SalaryRateRequest>>(body);
             
             response.StatusCode.Should().BeEquivalentTo(200);
-            requests.First().Id.Should().Be(-1);
+            requests.First().SenderId.Should().Be(2);
         }
         
         
@@ -72,7 +72,7 @@ namespace Tests
             var request = new AnswerSalaryRateRequestRequest
             {
                 InternalComment = "Test",
-                RequestChainId = -1,
+                RequestChainId = 1,
                 ReviewerComment = "Test",
                 SalaryRateRequestStatus = SalaryRateRequestStatus.Fulfilled
             };

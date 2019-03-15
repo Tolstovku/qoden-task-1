@@ -32,9 +32,9 @@ namespace Tests
 
 
         [Theory]
-        [InlineData(123)]
-        [InlineData(124)]
-        [InlineData(125)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
         public async Task UserCanGetExistingUserProfile(int id)
         {
             var response = await Api.RegularUser.GetAsync($"api/v1/user/{id}");
@@ -66,7 +66,7 @@ namespace Tests
                 FirstName = "Test", Lastname = "Test", Description = "Test", Email = "Test@email.ru",
                 NickName = "Test", Patronymic = "Test", PhoneNumber = "79119394404"
             };
-            const int id = 124;
+            const int id = 1;
 
             using (new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -86,7 +86,7 @@ namespace Tests
 
         [Theory]
         [InlineData("DefinitelyNotAnEmail" )]
-       
+
         public async Task AdminCannotModifyUserWithInvalidEmail(string email)
         {
             var req = new ModifyUserRequest
@@ -113,13 +113,13 @@ namespace Tests
         [Fact]
         public async Task AdminCanAssignManager()
         {
-            await CheckAssigning(true, 123, 125, false);
+            await CheckAssigning(true, 1, 3, false);
         }
 
         [Fact]
         public async Task AdminCanUnAssignManager()
         {
-            await CheckAssigning(false, 124, 125, false);
+            await CheckAssigning(false, 2, 3, false);
         }
 
         [Theory]
@@ -130,27 +130,27 @@ namespace Tests
             await CheckAssigning(true, userId, managerId, true);
 
         }
-        
+
         [Fact]
         public async Task AdminCanCreateUser()
         {
             var req = new CreateUserRequest
             {
                 FirstName = "Test", Lastname = "Test", Description = "Test", Email = "Test@email.ru",
-                NickName = "Test", Patronymic = "Test", PhoneNumber = "79119394404", DepartmentId = -1,
-                Password = "1234567890", UserRoleId = -3
+                NickName = "Test", Patronymic = "Test", PhoneNumber = "79119394404", DepartmentId = 1,
+                Password = "1234567890"
             };
             using (new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 var amountOfUsersBefore = Api.Db.Users.Count();
                 var response = await Api.AdminUser.PostAsJsonAsync("api/v1/user", req);
-                
+
                 response.StatusCode.Should().BeEquivalentTo(200);
                 var amountOfUsersAfter = Api.Db.Users.Count();
                 amountOfUsersAfter.Should().BeGreaterThan(amountOfUsersBefore);
                 var user = Api.Db.Users.Single(u => u.Email==req.Email && u.FirstName==req.FirstName &&
                                                     u.Lastname==req.FirstName && u.NickName==req.NickName &&
-                                                    u.DepartmentId==req.DepartmentId && u.UserRoleId==req.UserRoleId);
+                                                    u.DepartmentId==req.DepartmentId);
                 user.Should().NotBeNull();
             }
         }
@@ -191,7 +191,7 @@ namespace Tests
                 }
             }
         }
-        
-        
+
+
     }
 }
