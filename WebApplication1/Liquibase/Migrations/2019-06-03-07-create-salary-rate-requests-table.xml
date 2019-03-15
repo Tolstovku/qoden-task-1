@@ -15,7 +15,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="request_chain_id" type="int">
+            <column name="request_chain_id" type="int" autoIncrement="true">
                 <constraints nullable="false"/>
             </column>
 
