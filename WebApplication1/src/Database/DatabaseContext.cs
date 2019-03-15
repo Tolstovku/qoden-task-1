@@ -23,8 +23,9 @@ namespace WebApplication1.Database
         {
             this.ApplySnakeCase(modelBuilder);
             this.ApplyOnModelCreatingFromAllEntities(modelBuilder);
-            
+
             modelBuilder.Entity<UserManager>().HasKey(key => new {key.UserId, key.ManagerId});
+            modelBuilder.Entity<UserRole>().HasKey(key => new {key.UserId, key.RoleId});
             modelBuilder.Entity<User>().HasIndex(u => u.PhoneNumber).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.NickName).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
@@ -32,7 +33,7 @@ namespace WebApplication1.Database
 
             var pass1 = PasswordGenerator.HashPassword("123");
             var pass2 = PasswordGenerator.HashPassword("123");
-            
+
             modelBuilder.Entity<Department>()
                 .HasData(new Department {Id = -2, Name = "Frontend"},
                     new Department {Id = -1, Name = "Backend"});
@@ -40,26 +41,26 @@ namespace WebApplication1.Database
                 new User
                 {
                     Id = 123, NickName = "Admin", Password = pass1, FirstName = "Vlad", Lastname = "Nimatora",
-                    Email = "tatata@ayndex.ru",  UserRoleId= -1, DepartmentId = -1
+                    Email = "tatata@ayndex.ru",  DepartmentId = -1
                 },
                 new User
                 {
                     Id = 124, NickName = "User", Password = pass2, FirstName = "Dan", Lastname = "Tolstovku",
-                    Email = "shitmail@ayndex.ru", UserRoleId = -2, DepartmentId = -2
+                    Email = "shitmail@ayndex.ru", DepartmentId = -2
                 },
                 new User
                 {
                     Id = 125, NickName = "Manager", Password = pass1, FirstName = "Someone", Lastname = "Something",
-                    Email = "managerEmail@ayndex.ru",  UserRoleId= -3, DepartmentId = -1
+                    Email = "managerEmail@ayndex.ru", DepartmentId = -1
                 });
             modelBuilder.Entity<Role>().HasData(
                 new Role
-                    {Id = 1, Name = "user"}, new Role{Id = 2, Name = "manager"}, 
+                    {Id = 1, Name = "user"}, new Role{Id = 2, Name = "manager"},
                 new Role{Id = 3, Name = "admin"});
             modelBuilder.Entity<UserRole>().HasData(
-                new UserRole {Id = -1, UserId = 123, RoleId = 3},
-                new UserRole {Id = -2, UserId = 124, RoleId = 1},
-                new UserRole {Id = -3, UserId = 125, RoleId = 2}
+                new UserRole {UserId = 123, RoleId = 3},
+                new UserRole {UserId = 124, RoleId = 1},
+                new UserRole {UserId = 125, RoleId = 2}
             );
             modelBuilder.Entity<SalaryRateRequest>().HasData(
                 new SalaryRateRequest {Id = -1, RequestChainId = -1, SuggestedRate = 1337, Reason = "Want money", SenderId = 124},
