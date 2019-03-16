@@ -14,18 +14,24 @@ namespace WebApplication1.Database.Entities
         [Required]
         public string Password { get; set; }
         [Required]
+        [Column("first_name")]
         public string FirstName { get; set; }
         [Required]
+        [Column("last_name")]
         public string Lastname { get; set; }
         public string Patronymic { get; set; }
         [Required]
+        [Column("nickname")]
         public string NickName { get; set; }
         [Required]
         public string Email { get; set; }
+        [Column("phone_number")]
         public string PhoneNumber { get; set; }
+        [Column("invited_at")]
         public DateTime InvitedAt { get; set; }
         public string Description { get; set; }
         [Required]
+        [Column("department_id")]
         public int DepartmentId { get; set; }
 
         [ForeignKey("DepartmentId")]

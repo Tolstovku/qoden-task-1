@@ -41,8 +41,7 @@ namespace WebApplication1.Services
 
         public async Task<List<SalaryRateRequest>> GetSalaryRateRequestsByManager(int managerId)
         {
-            var managersUsersIds = await _db.GetUserIdsByManagerId(managerId);
-            return await _db.GetSalaryRequestsByUserIds(managersUsersIds);
+            return await _db.GetSalaryRequestsByManagerId(managerId);
 
         }
 

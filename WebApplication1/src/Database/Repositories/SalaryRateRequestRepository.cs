@@ -9,15 +9,18 @@ namespace WebApplication1.Database.Repositories
 {
     public static class SalaryRateRequestRepository
     {
-        public static async Task<List<SalaryRateRequest>> GetSalaryRequestsByUserIds(this IDbConnectionFactory db, List<int> userIds )
+        public static async Task<List<SalaryRateRequest>> GetSalaryRequestsByManagerId(this IDbConnectionFactory db, int managerId )
         {
             List<SalaryRateRequest> salaryRequests;
             var sql = $@"
                 SELECT * FROM {SalaryRequestSchema.Table}
-                WHERE {SalaryRequestSchema.SenderId} IN @userIds;";
+                WHERE {SalaryRequestSchema.SenderId} IN (
+                    SELECT {UserManagerSchema.UserId} FROM {UserManagerSchema.Table}
+                    WHERE {UserManagerSchema.ManagerId} = @managerId;);";
+
             using (var conn = db.GetOpenedConnection())
             {
-                salaryRequests = (await conn.QueryAsync<SalaryRateRequest>(sql, new {userIds})).ToList();
+                salaryRequests = (await conn.QueryAsync<SalaryRateRequest>(sql, new {managerId})).ToList();
             }
 
             return salaryRequests;
