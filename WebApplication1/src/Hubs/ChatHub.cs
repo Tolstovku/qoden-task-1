@@ -1,9 +1,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Qoden.Util;
+using Qoden.Validation;
 
 namespace WebApplication1.Hubs
 {
@@ -21,7 +23,7 @@ namespace WebApplication1.Hubs
             foreach (var roomId in roomsOfUser)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-                await SendRoomMessagesToCaller(roomId);
+                await SendAllRoomMessagesToCaller(roomId);
             }
 
             await base.OnConnectedAsync();
@@ -34,7 +36,7 @@ namespace WebApplication1.Hubs
             var connId = Context.ConnectionId;
 
             var roomsOfUser = UserInRooms.GetValueOrDefault(username);
-            if (roomsOfUser.Count == 10)
+            if (roomsOfUser.Count == 50)
             {
                 await Clients.Caller.SendAsync("roomLimitExceeded");
                 return;
@@ -43,7 +45,7 @@ namespace WebApplication1.Hubs
             roomsOfUser.Add(roomId);
             await Groups.AddToGroupAsync(connId, roomId);
             await Clients.Group(roomId).SendAsync("sendMessage", hasJoinedMsg);
-            await SendRoomMessagesToCaller(roomId);
+            await SendAllRoomMessagesToCaller(roomId);
         }
 
         public async Task LeaveRoom(string roomId)
@@ -61,13 +63,13 @@ namespace WebApplication1.Hubs
         {
             var username = UserInfoProvider.GetUsername(Context);
             var msgWithAuthor = $"{username}: {msg}\n";
-            var connId = Context.ConnectionId;
+            Check.Value(UserInRooms[username].Contains(roomId)).EqualsTo(true, "User is not present in specified room");
 
             await Clients.Group(roomId).SendAsync("sendMessage", msgWithAuthor);
             MessagesInRoom.GetValueOrDefault(roomId).Add(msg);
         }
 
-        private async Task SendRoomMessagesToCaller(string roomId)
+        private async Task SendAllRoomMessagesToCaller(string roomId)
         {
             var roomMessages = MessagesInRoom.GetOrAdd(roomId, new List<string>());
             if (roomMessages.Count>0)
