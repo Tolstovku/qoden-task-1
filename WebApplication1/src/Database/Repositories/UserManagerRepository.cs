@@ -11,20 +11,19 @@ namespace WebApplication1.Database.Repositories
     public static class UserManagerRepository
     {
 
-        public static async Task<List<int>> GetUserIdsByManagerId(this IDbConnectionFactory db, int managerId)
+        public static async Task<List<UserManager>> GetAllUserManagers(this IDbConnectionFactory db)
         {
-            List<int> userIds;
+            List<UserManager> userManagers;
             var sql = $@"
-                SELECT {UserManagerSchema.UserId} FROM {UserManagerSchema.Table}
-                WHERE {UserManagerSchema.ManagerId} = @managerId;";
+                SELECT * FROM {UserManagerSchema.Table};";
             using (var conn = db.GetOpenedConnection())
             {
-                userIds = (await conn.QueryAsync<int>(sql, new {managerId})).ToList();
+                userManagers = (await conn.QueryAsync<UserManager>(sql)).ToList();
             }
 
-            return userIds;
+            return userManagers;
         }
-
+        
         public static async Task<UserManager> GetUserManagerByIds(this IDbConnectionFactory db, int userId,int managerId)
         {
             UserManager userManager;

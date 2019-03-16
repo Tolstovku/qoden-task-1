@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -8,6 +9,21 @@ namespace WebApplication1.Database.Repositories
 {
     public static class UserRepository
     {
+        
+        public static async Task<List<User>> GetAllUsers(this IDbConnectionFactory db)
+        {
+            List<User> users;
+            var sql = $@"
+                SELECT * FROM {UserSchema.Table};";
+            using (var conn = db.GetOpenedConnection())
+            {
+                users = (await conn.QueryAsync<User>(sql)).ToList();
+            }
+
+            return users;
+        }
+
+        
         public static async Task<User> GetUserById(this IDbConnectionFactory db, int userId)
         {
             User user;
@@ -27,7 +43,7 @@ namespace WebApplication1.Database.Repositories
             User user;
             var sql = $@"
                 SELECT * FROM {UserSchema.Table} as u
-                INNER JOIN {DepartmentSchema.Table}  as d on u.{UserSchema.Id} = d.{DepartmentSchema.Id}
+                INNER JOIN {DepartmentSchema.Table}  as d on u.{UserSchema.DepartmentId} = d.{DepartmentSchema.Id}
                 WHERE u.{UserSchema.Id} = @userId;";
             using (var conn = db.GetOpenedConnection())
             {
