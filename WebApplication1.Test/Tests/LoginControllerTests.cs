@@ -15,7 +15,8 @@ using Xunit.Abstractions;
 
 namespace Tests
 {
-    public class LoginControllerTests : IClassFixture<ApiFixture>
+    [Collection("ApiFixture")]
+    public class LoginControllerTests
     {
         private ApiFixture Api { get; set; }
         private ITestOutputHelper Output { get; set; }
@@ -29,7 +30,6 @@ namespace Tests
         [Fact]
         public async Task UserCanLogin()
         {
-            Api.Db.Users.FirstOrDefault(u => true);
             var request = new LoginRequest
             {
                 NicknameOrEmail = "User",

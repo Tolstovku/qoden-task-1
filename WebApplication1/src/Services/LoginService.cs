@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Qoden.Validation;
 using WebApplication1.Database;
+using WebApplication1.Database.Repositories;
 using WebApplication1.Requests;
 
 namespace WebApplication1.Services
@@ -17,31 +19,33 @@ namespace WebApplication1.Services
 
     public class LoginService : ILoginService
     {
-        private readonly DatabaseContext _db;
-        private const string invalidLoginMsg = "Wrong username/email or password";
+        private readonly IDbConnectionFactory _db;
+        private const string InvalidLoginMsg = "Wrong username/email or password";
 
-        public LoginService(DatabaseContext db)
+        public LoginService(IDbConnectionFactory db)
         {
             _db = db;
         }
 
         public async Task<ClaimsPrincipal> Login(LoginRequest req)
         {
-            var user = await _db.Users.Include(u => u.UserRoles).ThenInclude(userRole => userRole.Role)
-                .FirstOrDefaultAsync(u => u.NickName == req.NicknameOrEmail || u.Email == req.NicknameOrEmail);
-            Check.Value(user).NotNull(invalidLoginMsg);
+
+            var user = await _db.GetUserByEmailOrNickname(req.NicknameOrEmail);
+            Check.Value(user).NotNull(InvalidLoginMsg);
             var verificationResult = PasswordGenerator.VerifyPassword(req.Password, user.Password);
             Check.Value(verificationResult, "Login")
-                .EqualsTo(PasswordVerificationResult.Success, invalidLoginMsg);
-            
+                .EqualsTo(PasswordVerificationResult.Success, InvalidLoginMsg);
+
+            var userRoles = await _db.GetRolesByUserId(user.Id);
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.NickName)
             };
-            foreach (var userRole in user.UserRoles)
+            foreach (var userRole in userRoles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
-                
+                claims.Add(new Claim(ClaimTypes.Role, userRole.Name));
+
             }
             return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
         }

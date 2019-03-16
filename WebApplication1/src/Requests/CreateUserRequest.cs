@@ -30,11 +30,10 @@ namespace WebApplication1.Requests
                 PhoneNumber = PhoneNumber,
                 Description = Description,
                 DepartmentId = DepartmentId,
-                UserRoleId = UserRoleId,
                 InvitedAt = TimeProvider.GetDateTime()
             };
         }
-        
+
         public void Validate(IValidator validator)
         {
             validator.CheckValue(Password, "Password").MinLength(9).MaxLength(20).IsPassword();

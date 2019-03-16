@@ -1,5 +1,5 @@
 {
   "Database": {
-    "ConnectionString": "User ID=postgres;Password=xna004;Host=localhost;Port=5432;Database=pip;"
+    "ConnectionString": "User ID=postgres;Password=xna004;Host=localhost;Port=5432;Database=qoden;"
   }
 }
