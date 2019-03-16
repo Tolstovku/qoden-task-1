@@ -39,7 +39,8 @@ namespace WebApplication1.Services
             var userRoles = await _db.GetRolesByUserId(user.Id);
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.NickName)
             };
             foreach (var userRole in userRoles)
             {
