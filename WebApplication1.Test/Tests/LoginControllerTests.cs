@@ -15,7 +15,8 @@ using Xunit.Abstractions;
 
 namespace Tests
 {
-    public class LoginControllerTests : IClassFixture<ApiFixture>
+    [Collection("ApiFixture")]
+    public class LoginControllerTests
     {
         private ApiFixture Api { get; set; }
         private ITestOutputHelper Output { get; set; }

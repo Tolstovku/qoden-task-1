@@ -8,6 +8,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WebApplication1.Database.Entities;
+using WebApplication1.Database.Repositories;
 using WebApplication1.Requests;
 using WebApplication1.Responses;
 using Xunit;
@@ -15,7 +16,8 @@ using Xunit.Abstractions;
 
 namespace Tests
 {
-    public class SalaryRateRequestControllerTests : IClassFixture<ApiFixture>
+    [Collection("ApiFixture")]
+    public class SalaryRateRequestControllerTests
     {
         private ApiFixture Api { get; set; }
 
@@ -34,9 +36,9 @@ namespace Tests
             };
             using (new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                var amountOfSRRsBefore = Api.Db.SalaryRateRequests.Count();
+                var amountOfSRRsBefore = (await Api.ConnectionFactory.GetAllSalaryRequests()).Count();
                 var response = await Api.RegularUser.PostAsJsonAsync("api/v1/user/requests", srrRequest);
-                var amountOfSRRsAfter = Api.Db.SalaryRateRequests.Count();
+                var amountOfSRRsAfter = (await Api.ConnectionFactory.GetAllSalaryRequests()).Count();
                 
                 response.StatusCode.Should().BeEquivalentTo(200);
                 amountOfSRRsAfter.Should().BeGreaterThan(amountOfSRRsBefore);
@@ -51,21 +53,9 @@ namespace Tests
             var requests = JsonConvert.DeserializeObject<IEnumerable<UserSalaryRateRequestsResponse>>(body);
             
             response.StatusCode.Should().BeEquivalentTo(200);
-            requests.Count().Should().Be(2);
+            requests.Count().Should().BeGreaterThan(0);
         }
 
-        [Fact]
-        public async Task ManagerCanGetRequestsOfHisEmployees()
-        {
-            var response = await Api.ManagerUser.GetAsync("api/v1/manager/requests");
-            var body = await response.Content.ReadAsStringAsync();
-            var requests = JsonConvert.DeserializeObject<IEnumerable<SalaryRateRequest>>(body);
-            
-            response.StatusCode.Should().BeEquivalentTo(200);
-            requests.First().SenderId.Should().Be(2);
-        }
-        
-        
         [Fact]
         public async Task ManagerCanAnswerRequest()
         {
@@ -79,9 +69,9 @@ namespace Tests
 
             using (new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                var amountOfSRRsBefore = Api.Db.SalaryRateRequests.Count();
+                var amountOfSRRsBefore = (await Api.ConnectionFactory.GetAllSalaryRequests()).Count();
                 var response = await Api.ManagerUser.PostAsJsonAsync("api/v1/manager/requests", request);
-                var amountOfSRRsAfter = Api.Db.SalaryRateRequests.Count();
+                var amountOfSRRsAfter = (await Api.ConnectionFactory.GetAllSalaryRequests()).Count();
                 
                 response.StatusCode.Should().BeEquivalentTo(200);
                 amountOfSRRsAfter.Should().BeGreaterThan(amountOfSRRsBefore);
@@ -106,9 +96,9 @@ namespace Tests
 
             using (new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                var amountOfSRRsBefore = Api.Db.SalaryRateRequests.Count();
+                var amountOfSRRsBefore = (await Api.ConnectionFactory.GetAllSalaryRequests()).Count();
                 var response = await Api.ManagerUser.PostAsJsonAsync("api/v1/manager/requests", request);
-                var amountOfSRRsAfter = Api.Db.SalaryRateRequests.Count();
+                var amountOfSRRsAfter = (await Api.ConnectionFactory.GetAllSalaryRequests()).Count();
                 
                 response.StatusCode.Should().BeEquivalentTo(400);
                 amountOfSRRsAfter.Should().Be(amountOfSRRsBefore);

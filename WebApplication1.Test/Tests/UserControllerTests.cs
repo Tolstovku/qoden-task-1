@@ -4,22 +4,27 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Transactions;
+using Dapper;
 using FluentAssertions;
 using FluentAssertions.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using Qoden.Validation;
 using WebApplication1.Database.Entities;
+using WebApplication1.Database.Repositories;
 using WebApplication1.Requests;
 using WebApplication1.Responses;
 using Xunit;
 using Xunit.Abstractions;
+using static WebApplication1.Database.Schemas.UserSchema;
 
 namespace Tests
 {
-    public class UserControllerTests : IClassFixture<ApiFixture>
+    [Collection("ApiFixture")]
+    public class UserControllerTests
     {
         private ApiFixture Api { get; set; }
         private readonly ITestOutputHelper _testOutputHelper;
@@ -73,7 +78,8 @@ namespace Tests
                 var response = await Api.AdminUser.PutAsJsonAsync($"api/v1/user/{id}", req);
 
                 response.StatusCode.Should().BeEquivalentTo(200);
-                var updatedUser = Api.Db.Users.Single(u => u.Id == id);
+                
+                var updatedUser = await Api.ConnectionFactory.GetUserById(id);
                 updatedUser.NickName.Should().Be(req.NickName);
                 updatedUser.Email.Should().Be(req.Email);
                 updatedUser.FirstName.Should().Be(req.FirstName);
@@ -140,19 +146,16 @@ namespace Tests
                 NickName = "Test", Patronymic = "Test", PhoneNumber = "79119394404", DepartmentId = 1,
                 Password = "1234567890"
             };
-            using (new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                var amountOfUsersBefore = Api.Db.Users.Count();
+                var amountOfUsersBefore = (await Api.ConnectionFactory.GetAllUsers()).Count();
                 var response = await Api.AdminUser.PostAsJsonAsync("api/v1/user", req);
 
                 response.StatusCode.Should().BeEquivalentTo(200);
-                var amountOfUsersAfter = Api.Db.Users.Count();
-                amountOfUsersAfter.Should().BeGreaterThan(amountOfUsersBefore);
-                var user = Api.Db.Users.Single(u => u.Email==req.Email && u.FirstName==req.FirstName &&
+                var usersAfter = await Api.ConnectionFactory.GetAllUsers();
+                usersAfter.Count.Should().BeGreaterThan(amountOfUsersBefore);
+                var user = usersAfter.Single(u => u.Email==req.Email && u.FirstName==req.FirstName &&
                                                     u.Lastname==req.FirstName && u.NickName==req.NickName &&
-                                                    u.DepartmentId==req.DepartmentId);
+                                                    u.DepartmentId==req.DepartmentId); 
                 user.Should().NotBeNull();
-            }
         }
 
         private async Task CheckAssigning(bool doAssign, int userId, int managerId, bool shouldFail)
@@ -166,9 +169,9 @@ namespace Tests
             };
             using (new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                var amountOfUserManagerRelationshipsBefore = Api.Db.UserManagers.Count();
+                var amountOfUserManagerRelationshipsBefore = (await Api.ConnectionFactory.GetAllUserManagers()).Count();
                 var response = await Api.AdminUser.PostAsJsonAsync($"api/v1/user/{endPath}", req);
-                var amountOfUserManagerRelationshipsAfter = Api.Db.UserManagers.Count();
+                var amountOfUserManagerRelationshipsAfter = (await Api.ConnectionFactory.GetAllUserManagers()).Count();
 
                 if (!shouldFail)
                 {
