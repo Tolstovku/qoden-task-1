@@ -1,12 +1,11 @@
 FROM microsoft/dotnet:sdk AS build-env
 WORKDIR /app
 
-COPY *.csproj ./
-COPY NuGet.Config ./
-RUN dotnet restore --configfile NuGet.Config
-
-COPY . ./
+COPY ./WebApplication1/ ./
+RUN ls -la
+COPY ./Lib ../Lib
 RUN dotnet publish -c Release -o out
+RUN ls -la
 
 FROM microsoft/dotnet:aspnetcore-runtime
 WORKDIR /app
