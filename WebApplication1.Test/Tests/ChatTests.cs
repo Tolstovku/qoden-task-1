@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.AspNetCore.SignalR.Protocol;
-using Microsoft.EntityFrameworkCore.Internal;
+using Tests.Fixtures;
 using Xunit;
 
-namespace Tests
+namespace Tests.Tests
 {
     [Collection("ApiFixture")]
     public class ChatTests
@@ -56,7 +54,7 @@ namespace Tests
         public async Task UserCanGetAllPreviousRoomMessages()
         {
             const int roomId = 42;
-            Hub.On<List<string>>("roomMessages",
+            Hub.On<HashSet<string>>("roomMessages",
                 (messages) => messages.First().Should().NotBeNull());
             await Hub.StartAsync();
             await Hub.InvokeAsync("joinRoom",  roomId);

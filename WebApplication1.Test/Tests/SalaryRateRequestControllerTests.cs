@@ -7,6 +7,7 @@ using System.Transactions;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Tests.Fixtures;
 using WebApplication1.Database.Entities;
 using WebApplication1.Database.Repositories;
 using WebApplication1.Requests;

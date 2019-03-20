@@ -1,3 +1,4 @@
+using Tests.Fixtures;
 using Xunit;
 
 namespace Tests

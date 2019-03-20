@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using Qoden.Validation;
+using Tests.Fixtures;
 using WebApplication1.Database.Entities;
 using WebApplication1.Database.Repositories;
 using WebApplication1.Requests;
@@ -78,7 +79,7 @@ namespace Tests
                 var response = await Api.AdminUser.PutAsJsonAsync($"api/v1/user/{id}", req);
 
                 response.StatusCode.Should().BeEquivalentTo(200);
-                
+
                 var updatedUser = await Api.ConnectionFactory.GetUserById(id);
                 updatedUser.NickName.Should().Be(req.NickName);
                 updatedUser.Email.Should().Be(req.Email);
@@ -154,7 +155,7 @@ namespace Tests
                 usersAfter.Count.Should().BeGreaterThan(amountOfUsersBefore);
                 var user = usersAfter.Single(u => u.Email==req.Email && u.FirstName==req.FirstName &&
                                                     u.Lastname==req.FirstName && u.NickName==req.NickName &&
-                                                    u.DepartmentId==req.DepartmentId); 
+                                                    u.DepartmentId==req.DepartmentId);
                 user.Should().NotBeNull();
         }
 

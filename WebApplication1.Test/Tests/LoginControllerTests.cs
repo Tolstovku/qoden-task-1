@@ -8,6 +8,7 @@ using System.Transactions;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Tests.Fixtures;
 using WebApplication1.Database;
 using WebApplication1.Requests;
 using Xunit;
