@@ -19,14 +19,13 @@ namespace Tests.Tests
             Hub = api.Hub;
         }
 
+        private const int roomId = 42;
         const string author = "User";
         const string msg = "Hello world!";
 
         [Fact]
         public async Task UserCanSendMessage()
         {
-            const int roomId = 2;
-
             Hub.On<string>("sendMessage",
                 (msgWithAuthor) => msgWithAuthor.Should().BeEquivalentTo($"{author}: {msg}\n"));
 
@@ -53,12 +52,34 @@ namespace Tests.Tests
         [Fact]
         public async Task UserCanGetAllPreviousRoomMessages()
         {
-            const int roomId = 42;
             Hub.On<HashSet<string>>("roomMessages",
                 (messages) => messages.First().Should().NotBeNull());
             await Hub.StartAsync();
             await Hub.InvokeAsync("joinRoom",  roomId);
             await Hub.StopAsync();
         }
+
+        [Fact]
+        public async Task UserCanGetAvailableRooms()
+        {
+            Hub.On<HashSet<string>>("getAvailableRooms",
+                (rooms) => rooms.First().Should().Be("42"));
+            await Hub.StartAsync();
+            await Hub.InvokeAsync("joinRoom",  roomId);
+            await Hub.InvokeAsync("getAvailableRooms");
+            await Hub.StopAsync();
+        }
+
+        [Fact]
+        public async Task UserCanGetUsersInRoom()
+        {
+            Hub.On<HashSet<string>>("getUsersInRoom",
+                (users) => users.First().Should().Be("User"));
+            await Hub.StartAsync();
+            await Hub.InvokeAsync("joinRoom",  roomId);
+            await Hub.InvokeAsync("getUsersInRoom", roomId);
+            await Hub.StopAsync();
+        }
+
     }
 }
